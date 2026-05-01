@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도쿄야 우리 간다 🗼</title>
+<!-- OG 태그: 카카오톡 링크 공유 시 프리뷰 카드 -->
+<meta property="og:title" content="도쿄야 우리 간다 🗼"/>
+<meta property="og:description" content="밍갱이랑 우리만의 2박3일 도쿄 여행 플랜 ✈️"/>
+<meta property="og:image" content="og-image.png"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --red:#ff3b5c;--red2:#fff0f3;
+  --ink:#18181b;--muted:rgba(24,24,27,.4);--border:rgba(24,24,27,.08);
+  --bg:#f4f4f7;--card:#fff;
+  --green:#00c27a;--green2:#dcfff1;
+  --purple:#7c5cfc;--purple2:#f0eeff;
+  --blue:#2d8ef5;--blue2:#e6f2ff;
+  --amber:#ff9500;--amber2:#fff5e6;
+  --orange:#ff6b35;--orange2:#fff3ee;
+  --teal:#00bcd4;--teal2:#e0f9fc;
+  --pink:#f72585;--pink2:#fff0f7;
+  --nav-h:64px;
+}
+body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+
+/* ── HERO ── */
+.hero{background:#fff;padding:18px 16px 16px;border-bottom:1px solid var(--border);text-align:center;}
+.hero-emoji{font-size:44px;line-height:1;margin-bottom:10px;display:block;}
+.hero-kv{display:inline-block;background:linear-gradient(135deg,var(--red),#ff6b8a);color:#fff;font-size:10px;font-weight:800;padding:4px 14px;border-radius:100px;margin-bottom:12px;letter-spacing:.4px;}
+.hero-msg-row{display:flex;align-items:center;gap:10px;border-radius:16px;padding:13px 15px;text-align:left;background:linear-gradient(135deg,#ff3b5c,#ff6b8a);transition:background .5s ease;}
+.hero-msg-em{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.hero-msg-day{font-size:9px;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
+.hero-msg-main{font-size:13px;font-weight:700;color:#fff;line-height:1.55;}
+
+/* ── DAY SWITCHER ── */
+.day-sw{display:flex;gap:6px;padding:12px 14px 0;background:var(--bg);}
+.ds{flex:1;padding:9px 4px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;transition:all .18s;}
+.ds.on{background:linear-gradient(135deg,var(--red),#ff6b8a);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(255,59,92,.3);}
+
+/* ── D2 TOGGLE ── */
+.d2bar{display:none;padding:10px 14px;background:var(--bg);gap:10px;align-items:center;}
+.d2bar.show{display:flex;}
+.d2bar-lbl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;}
+.d2pills{display:flex;background:var(--card);border:1.5px solid var(--border);border-radius:100px;padding:3px;gap:2px;}
+.d2p{padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:inherit;transition:all .15s;white-space:nowrap;}
+.d2p.on{background:var(--ink);color:#fff;}
+
+/* ── MAP ── */
+#mapWrap{display:block;}
+#map{height:200px;width:100%;border-bottom:1px solid var(--border);}
+
+/* ── CONTENT ── */
+.tab-panel{display:none;padding:14px 14px calc(var(--nav-h) + 16px);}
+.tab-panel.on{display:block;}
+
+/* ── TIMELINE ── */
+.tl-item{display:flex;gap:10px;margin-bottom:6px;}
+.tl-g{width:40px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
+.tl-time{font-size:10px;font-weight:700;color:var(--muted);text-align:center;padding-top:17px;}
+.tl-dot{width:11px;height:11px;border-radius:50%;border:2.5px solid var(--red);background:var(--card);margin-top:4px;z-index:1;flex-shrink:0;}
+.tl-line{width:1.5px;flex:1;background:var(--border);min-height:16px;}
+.pc{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;transition:box-shadow .2s;}
+.pc:hover{box-shadow:0 4px 18px rgba(0,0,0,.08);}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px;}
+.pc-name{font-size:13px;font-weight:800;color:var(--ink);}
+.pc-jp{font-size:10px;color:var(--muted);font-weight:400;margin-left:3px;}
+.badge{flex-shrink:0;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:800;white-space:nowrap;}
+.b-f{background:linear-gradient(135deg,#ff3b5c,#ff6b8a);color:#fff;}
+.b-c{background:linear-gradient(135deg,#ff9500,#ffb830);color:#fff;}
+.b-s{background:linear-gradient(135deg,#7c5cfc,#a67cfb);color:#fff;}
+.b-k{background:linear-gradient(135deg,#00c27a,#00e5a0);color:#fff;}
+.b-a{background:linear-gradient(135deg,#2d8ef5,#6ab4ff);color:#fff;}
+.pc-desc{font-size:11px;color:var(--muted);line-height:1.6;}
+.pc-tip{background:linear-gradient(135deg,#fff5f7,#ffe8ee);border-left:3px solid var(--red);padding:7px 10px;border-radius:0 10px 10px 0;font-size:11px;line-height:1.6;margin-top:8px;}
+.pc-tip strong{color:var(--red);}
+.pc-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+.chip{padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;background:var(--red2);color:var(--red);}
+
+/* Food item in timeline */
+.tl-food{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:11px 14px;cursor:pointer;transition:border-color .15s;}
+.tl-food:hover{border-color:var(--red);}
+.tl-food-top{display:flex;align-items:center;gap:8px;margin-bottom:3px;}
+.tl-food-em{font-size:22px;line-height:1;}
+.tl-food-name{font-size:13px;font-weight:800;color:var(--ink);flex:1;}
+.change-btn{font-size:10px;font-weight:800;color:var(--red);background:var(--red2);padding:3px 9px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+.tl-food-desc{font-size:11px;color:var(--muted);}
+.tl-food-row{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+.map-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#fff;background:var(--ink);padding:4px 11px;border-radius:100px;text-decoration:none;}
+
+/* Transit */
+.transit{display:flex;align-items:center;gap:8px;margin:3px 0 3px 50px;background:rgba(26,26,46,.04);border-radius:10px;padding:7px 12px;}
+.tr-ic{font-size:14px;flex-shrink:0;}
+.tr-info{flex:1;font-size:11px;}
+.tr-mode{font-weight:700;color:var(--ink);}
+.tr-time{color:var(--muted);}
+.nav-link{flex-shrink:0;font-size:11px;font-weight:700;color:#fff;background:var(--ink);padding:4px 11px;border-radius:100px;text-decoration:none;}
+
+/* ── FOOD TAB ── */
+.meal-section{margin-bottom:20px;}
+.meal-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.meal-hd-label{font-size:14px;font-weight:800;color:var(--ink);}
+.meal-hd-line{flex:1;height:1.5px;background:var(--border);border-radius:1px;}
+.food-opt{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.food-opt.sel{border-color:var(--red);background:#fffcfc;}
+.food-opt:hover{border-color:rgba(232,34,58,.4);}
+.fo-em{font-size:26px;line-height:1;flex-shrink:0;margin-top:2px;}
+.fo-info{flex:1;}
+.fo-name{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:2px;}
+.fo-desc{font-size:11px;color:var(--muted);line-height:1.55;margin-bottom:4px;}
+.fo-meta{font-size:10px;font-weight:700;color:var(--muted);}
+.fo-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.fo-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;transition:all .15s;}
+.food-opt.sel .fo-check{background:var(--red);border-color:var(--red);}
+.fo-map{font-size:10px;font-weight:700;color:var(--ink);background:var(--bg);padding:3px 9px;border-radius:100px;text-decoration:none;white-space:nowrap;}
+
+/* ── SHOP TAB ── */
+.shop-sec{margin-bottom:24px;}
+.shop-sec-title{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px;}
+.shop-cat-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:12px 14px;border-radius:16px;}
+.shop-cat-ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.shop-cat-label{flex:1;}
+.shop-cat-title{font-size:15px;font-weight:900;color:var(--ink);}
+.shop-cat-sub{font-size:11px;color:var(--muted);font-weight:500;margin-top:1px;}
+.prod-card{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:12px 13px;margin-bottom:8px;cursor:pointer;user-select:none;transition:all .15s;}
+.prod-card:hover{border-color:var(--red);box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.prod-card.done{opacity:.5;}
+.prod-check{width:22px;height:22px;border-radius:7px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;transition:all .15s;}
+.prod-card.done .prod-check{background:var(--green);border-color:var(--green);color:#fff;}
+.prod-em{font-size:26px;line-height:1;flex-shrink:0;}
+.prod-info{flex:1;min-width:0;}
+.prod-name{font-size:13px;font-weight:800;color:var(--ink);line-height:1.3;}
+.prod-card.done .prod-name{text-decoration:line-through;}
+.prod-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.prod-arr{font-size:18px;color:var(--muted);flex-shrink:0;line-height:1;}
+.shop-add{display:flex;gap:8px;margin-top:8px;}
+.shop-add input{flex:1;padding:10px 13px;border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;background:var(--card);color:var(--ink);outline:none;}
+.shop-add input:focus{border-color:var(--red);}
+.shop-add button{padding:10px 16px;background:var(--red);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+/* ── PRODUCT MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:flex-end;}
+.modal-overlay.open{display:flex;}
+.modal-sheet{background:#fff;border-radius:24px 24px 0 0;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:100px;margin:12px auto 0;}
+.modal-body{padding:14px 22px 0;}
+.modal-em-big{font-size:60px;text-align:center;display:block;margin:8px 0 14px;}
+.modal-name{font-size:19px;font-weight:900;color:var(--ink);margin-bottom:2px;}
+.modal-jp{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.modal-desc{font-size:14px;color:var(--ink);line-height:1.75;margin-bottom:14px;}
+.modal-price-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.modal-tag{padding:5px 13px;border-radius:100px;font-size:12px;font-weight:700;}
+.modal-tag.price{background:var(--amber2);color:var(--amber);}
+.modal-tag.where{background:var(--purple2);color:var(--purple);}
+.modal-tip{background:linear-gradient(135deg,#fff5f7,#ffe8ee);border-left:3px solid var(--red);padding:10px 13px;border-radius:0 12px 12px 0;font-size:12px;line-height:1.7;margin-bottom:20px;}
+.modal-tip strong{color:var(--red);}
+.modal-btns{display:flex;gap:10px;padding:0 22px 28px;}
+.modal-btn-close{flex:1;padding:14px;border:1.5px solid var(--border);border-radius:14px;font-size:14px;font-weight:700;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;}
+.modal-btn-check{flex:1;padding:14px;border:none;border-radius:14px;font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--red),#ff6b8a);color:#fff;cursor:pointer;font-family:inherit;}
+.modal-btn-check.checked{background:linear-gradient(135deg,var(--green),#00e5a0);}
+
+/* ── PREP TAB ── */
+.prep-msg{border-radius:18px;padding:16px 18px;color:#fff;margin-bottom:18px;display:flex;gap:14px;align-items:center;transition:background .5s ease;background:linear-gradient(135deg,#ff9500,#ffb830);}
+.prep-msg-av{font-size:32px;flex-shrink:0;}
+.prep-msg-lbl{font-size:10px;opacity:.6;font-weight:700;letter-spacing:.4px;margin-bottom:4px;}
+.prep-msg-txt{font-size:14px;font-weight:700;line-height:1.5;}
+.prep-sec{margin-bottom:22px;}
+.prep-sec-title{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.prep-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:6px;cursor:pointer;user-select:none;transition:all .15s;font-size:13px;font-weight:600;}
+.prep-item:hover{border-color:var(--red);}
+.prep-item.done{opacity:.5;text-decoration:line-through;}
+.prep-item.done .s-box{background:var(--green);border-color:var(--green);color:#fff;}
+.budget-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;}
+.budget-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;}
+.budget-row:last-child{border-bottom:none;}
+.budget-lbl{font-weight:600;color:var(--ink);}
+.budget-lbl small{font-size:10px;color:var(--muted);font-weight:400;display:block;margin-top:1px;}
+.budget-amt{font-weight:800;color:var(--red);}
+.budget-total{background:var(--ink);color:#fff;}
+.budget-total .budget-lbl,.budget-total .budget-amt{color:#fff;}
+.info-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:8px;}
+.info-card-title{font-size:12px;font-weight:800;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.info-row{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);margin-bottom:5px;line-height:1.5;}
+.info-row:last-child{margin-bottom:0;}
+.info-dot{width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:5px;}
+.app-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.app-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--ink);}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;padding:8px 0 12px;z-index:500;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px;border:none;background:none;font-family:inherit;transition:opacity .15s;}
+.bn-ic{font-size:20px;line-height:1;}
+.bn-lbl{font-size:9px;font-weight:700;color:var(--muted);}
+.bn.on .bn-lbl{color:var(--red);}
+.bn-dot{width:4px;height:4px;border-radius:50%;background:var(--red);margin:0 auto;}
+
+/* section title */
+.sec-title{font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin:4px 0 14px;}
+
+@media(max-width:480px){.hero h1{font-size:20px;}#map{height:170px;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-emoji">🐰🐿️</div>
+  <div class="hero-kv">✈️ 2026년 7월 · 2박 3일</div>
+  <div class="hero-msg-row">
+    <div class="hero-msg-em" id="msgAv">💌</div>
+    <div>
+      <div class="hero-msg-day" id="msgLbl">DAY 1 · 오늘의 메시지</div>
+      <div class="hero-msg-main" id="msgTxt">공주 여권 잘 들고 왔지? 🛂 우리 첫 해외여행이잖아 — 소듕해</div>
+    </div>
+  </div>
+</header>
+
+<div class="day-sw" id="daySw">
+  <button class="ds on" onclick="setDay(0)">Day 1</button>
+  <button class="ds" onclick="setDay(1)">Day 2</button>
+  <button class="ds" onclick="setDay(2)">Day 3</button>
+</div>
+
+<div class="d2bar" id="d2bar">
+  <span class="d2bar-lbl">Day 2 코스</span>
+  <div class="d2pills">
+    <button class="d2p on" onclick="setD2('s')">🗼 시부야</button>
+    <button class="d2p" onclick="setD2('d')">🏰 디즈니</button>
+  </div>
+</div>
+
+<div id="mapWrap"><div id="map"></div></div>
+
+<!-- ═══ 일정 탭 ═══ -->
+<div class="tab-panel on" id="scheduleTab">
+  <!-- DAY 1 -->
+  <div id="sch-d0">
+    <div class="tl-item" style="margin-top:2px;">
+      <div class="tl-g"><div class="tl-time">10:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(0,0)">
+        <div class="pc-top"><div><span class="pc-name">센소지 절</span><span class="pc-jp">浅草寺</span></div><span class="badge b-k">문화</span></div>
+        <p class="pc-desc">도쿄에서 가장 오래된 절. 가미나리몬 앞 커플 사진 필수!</p>
+        <div class="pc-tip"><strong>커플 팁 💕</strong> 오미쿠지 같이 뽑기 — 나쁜 운세는 나무에 묶고 오면 됨</div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">3분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=浅草寺&destination=仲見世通り&travelmode=walking" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">11:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(0,1)">
+        <div class="pc-top"><div><span class="pc-name">나카미세 거리</span><span class="pc-jp">仲見世通り</span></div><span class="badge b-s">쇼핑</span></div>
+        <p class="pc-desc">250m 전통 기념품 거리. 닌교야키 & 멜론빵 먹으면서 구경!</p>
+        <div class="pc-chips"><span class="chip">🍡 닌교야키</span><span class="chip">🍈 멜론빵</span></div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">2분</div></div><a class="nav-link" id="nav-d0-lunch" href="#" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">12:30</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-food" onclick="jumpFood(0,'lunch')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-d0-lunch">🍤</span><span class="tl-food-name" id="nm-d0-lunch">다이코쿠야 텐푸라</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-d0-lunch">아사쿠사 1887년 텐동 맛집 · ¥1,500</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-d0-lunch" href="https://www.google.com/maps/dir/?api=1&destination=大黒家天麩羅+浅草&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚇</span><div class="tr-info"><div class="tr-mode">도보 15분 또는 지하철 5분</div><div class="tr-time">도부 스카이트리라인</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=大黒家天麩羅+浅草&destination=東京スカイツリー&travelmode=transit" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">14:30</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(0,3)">
+        <div class="pc-top"><div><span class="pc-name">도쿄 스카이트리</span><span class="pc-jp">東京スカイツリー</span></div><span class="badge b-a">액티비티</span></div>
+        <p class="pc-desc">634m 전망대에서 도쿄 전체를! 맑은 날엔 후지산까지.</p>
+        <div class="pc-tip"><strong>예약 필수 🎫</strong> 공식 사이트 날짜 지정 예약. 성인 2인 약 4,000–5,200엔</div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚇</span><div class="tr-info"><div class="tr-mode">지하철 · 반조선</div><div class="tr-time">약 20분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=東京スカイツリー&destination=上野公園&travelmode=transit" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">17:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(0,4)">
+        <div class="pc-top"><div><span class="pc-name">우에노 공원</span><span class="pc-jp">上野公園</span></div><span class="badge b-k">문화</span></div>
+        <p class="pc-desc">7월엔 불忍池 연꽃 활짝! 벤텐도 사원까지 산책하면서 인생샷.</p>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">5분</div></div><a class="nav-link" id="nav-d0-dinner" href="#" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">19:30</div><div class="tl-dot"></div></div>
+      <div class="tl-food" onclick="jumpFood(0,'dinner')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-d0-dinner">🍢</span><span class="tl-food-name" id="nm-d0-dinner">아메요코 이자카야</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-d0-dinner">야키토리 + 하이볼 현지 분위기 · ¥2,500</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-d0-dinner" href="https://www.google.com/maps/dir/?api=1&destination=アメ横+上野&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 SHIBUYA -->
+  <div id="sch-d1s" style="display:none;">
+    <div class="tl-item" style="margin-top:2px;">
+      <div class="tl-g"><div class="tl-time">09:30</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(1,0)">
+        <div class="pc-top"><div><span class="pc-name">메이지 신궁</span><span class="pc-jp">明治神宮</span></div><span class="badge b-k">문화</span></div>
+        <p class="pc-desc">70만 평 숲 신사. 아야메 정원 물가 코스 커플 추천!</p>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">10분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=明治神宮&destination=竹下通り&travelmode=walking" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">11:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-food" onclick="jumpFood(1,'brunch')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-d1-brunch">🥞</span><span class="tl-food-name" id="nm-d1-brunch">하라주쿠 크레페</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-d1-brunch">다케시타 거리 명물 · ¥700~</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-d1-brunch" href="https://www.google.com/maps/dir/?api=1&destination=原宿クレープ&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">12분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=竹下通り&destination=表参道&travelmode=walking" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">13:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-food" onclick="jumpFood(1,'lunch')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-d1-lunch">🥩</span><span class="tl-food-name" id="nm-d1-lunch">규카츠 모토무라</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-d1-lunch">두툼한 규카츠 원조 맛집 · ¥1,500</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-d1-lunch" href="https://www.google.com/maps/dir/?api=1&destination=牛かつもと村+渋谷&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">15분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=表参道&destination=渋谷スクランブル交差点&travelmode=walking" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">15:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(1,3)">
+        <div class="pc-top"><div><span class="pc-name">오모테산도 힐즈</span><span class="pc-jp">表参道ヒルズ</span></div><span class="badge b-s">쇼핑</span></div>
+        <p class="pc-desc">고급 편집숍 & 카페가 즐비한 아오야마 메인 스트리트. 브랜드 구경 & 카페 타임!</p>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">8분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=表参道ヒルズ&destination=渋谷スクランブル交差点&travelmode=walking" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">17:30</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(1,4)">
+        <div class="pc-top"><div><span class="pc-name">시부야 스크램블</span><span class="pc-jp">スクランブル交差点</span></div><span class="badge b-k">관광</span></div>
+        <p class="pc-desc">3,000명이 한번에! 스타벅스 쓰타야 2층에서 뷰 감상.</p>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보 · 스크램블스퀘어</div><div class="tr-time">3분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=渋谷スクランブル交差点&destination=SHIBUYA+SKY&travelmode=walking" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">19:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(1,5)">
+        <div class="pc-top"><div><span class="pc-name">시부야 스카이 야경</span><span class="pc-jp">SHIBUYA SKY</span></div><span class="badge b-a">액티비티</span></div>
+        <p class="pc-desc">45–46층 옥상 360도 야경. 옥상 와인 판매 💕</p>
+        <div class="pc-tip"><strong>예약 필수 🌙</strong> 2,000엔/인. 저녁 입장권 빨리 매진!</div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">5분</div></div><a class="nav-link" id="nav-d1-dinner" href="#" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">21:00</div><div class="tl-dot"></div></div>
+      <div class="tl-food" onclick="jumpFood(1,'dinner')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-d1-dinner">🍜</span><span class="tl-food-name" id="nm-d1-dinner">이치란 라멘</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-d1-dinner">개인 칸막이 돈코츠 라멘 · ¥1,200</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-d1-dinner" href="https://www.google.com/maps/dir/?api=1&destination=一蘭+渋谷&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 DISNEY -->
+  <div id="sch-d1d" style="display:none;">
+    <div class="tl-item" style="margin-top:2px;">
+      <div class="tl-g"><div class="tl-time">08:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc"><div class="pc-top"><div><span class="pc-name">숙소 출발</span></div><span class="badge b-a">이동</span></div><p class="pc-desc">JR 케이요선 마이하마역. 신주쿠 기준 약 45분.</p></div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚃</span><div class="tr-info"><div class="tr-mode">JR 케이요선 · 마이하마역</div><div class="tr-time">약 45분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=新宿駅&destination=東京ディズニーランド&travelmode=transit" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">09:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc"><div class="pc-top"><div><span class="pc-name">디즈니랜드 입장</span><span class="pc-jp">東京ディズニーランド</span></div><span class="badge b-a">액티비티</span></div><p class="pc-desc">개장 동시 입장! DPA로 인기 어트랙션 예약. 1인 약 10,900엔.</p></div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">13:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-food" onclick="jumpFood('disney','lunch')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-dd-lunch">🃏</span><span class="tl-food-name" id="nm-dd-lunch">하트의 여왕 뷔페</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-dd-lunch">왕궁 인테리어 디즈니 뷔페 · ¥3,500</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-dd-lunch" href="https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">20:00</div><div class="tl-dot"></div></div>
+      <div class="pc"><div class="pc-top"><div><span class="pc-name">야간 퍼레이드 & 불꽃</span></div><span class="badge b-a">액티비티</span></div><p class="pc-desc">신데렐라 성 앞에서 둘이 보는 불꽃 — 잊지 못할 추억 💕</p></div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div id="sch-d2" style="display:none;">
+    <div class="tl-item" style="margin-top:2px;">
+      <div class="tl-g"><div class="tl-time">09:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(2,0)">
+        <div class="pc-top"><div><span class="pc-name">신주쿠 교엔</span><span class="pc-jp">新宿御苑</span></div><span class="badge b-k">문화</span></div>
+        <p class="pc-desc">58만 평 국립 정원. 7월 수국 & 연못 산책. 500엔.</p>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">12분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=新宿御苑&destination=伊勢丹新宿店&travelmode=walking" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">11:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(2,1)">
+        <div class="pc-top"><div><span class="pc-name">신주쿠 쇼핑</span><span class="pc-jp">新宿</span></div><span class="badge b-s">쇼핑</span></div>
+        <p class="pc-desc">이세탄, 루미네, 돈키호테. 화장품 & 과자 총공세!</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">13:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-food" onclick="jumpFood(2,'lunch')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-d2-lunch">🍣</span><span class="tl-food-name" id="nm-d2-lunch">스시로</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-d2-lunch">고퀄 회전초밥 1접시 100~300엔 · ¥1,500</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-d2-lunch" href="https://www.google.com/maps/dir/?api=1&destination=スシロー+新宿&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚇</span><div class="tr-info"><div class="tr-mode">지하철 · 마루노우치선</div><div class="tr-time">약 25분</div></div><a class="nav-link" href="https://www.google.com/maps/dir/?api=1&origin=新宿駅&destination=GINZA+SIX&travelmode=transit" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">15:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="pc" onclick="focusPin(2,3)">
+        <div class="pc-top"><div><span class="pc-name">긴자 쇼핑 & 산책</span><span class="pc-jp">銀座</span></div><span class="badge b-s">쇼핑</span></div>
+        <p class="pc-desc">긴자 식스, 이토야 문구점. 서로 편지지 골라주기 💌</p>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">15분</div></div><a class="nav-link" id="nav-d2-dinner" href="#" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">18:00</div><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-food" onclick="jumpFood(2,'cafe')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-d2-cafe">🧁</span><span class="tl-food-name" id="nm-d2-cafe">앙리 샤르팡티에</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-d2-cafe">이세탄 지하 고급 마들렌 · ¥400~</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-d2-cafe" href="https://www.google.com/maps/dir/?api=1&destination=アンリシャルパンティエ+新宿&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+    <div class="transit"><span class="tr-ic">🚶</span><div class="tr-info"><div class="tr-mode">도보</div><div class="tr-time">5분</div></div><a class="nav-link" id="nav-d2-dinner2" href="#" target="_blank">길 안내 →</a></div>
+
+    <div class="tl-item">
+      <div class="tl-g"><div class="tl-time">19:30</div><div class="tl-dot"></div></div>
+      <div class="tl-food" onclick="jumpFood(2,'dinner')">
+        <div class="tl-food-top"><span class="tl-food-em" id="em-d2-dinner">🥩</span><span class="tl-food-name" id="nm-d2-dinner">야키니쿠 라이크</span><span class="change-btn">바꾸기</span></div>
+        <div class="tl-food-desc" id="ds-d2-dinner">1인 와규 야키니쿠 · ¥3,000</div>
+        <div class="tl-food-row"><span></span><a class="map-btn" id="mp-d2-dinner" href="https://www.google.com/maps/dir/?api=1&destination=焼肉ライク+東京駅&travelmode=transit" target="_blank">📍 지도</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 맛집 탭 ═══ -->
+<div class="tab-panel" id="foodTab">
+  <!-- DAY 1 food -->
+  <div id="food-d0">
+    <div class="sec-title">🗓️ Day 1 · 아사쿠사 &amp; 우에노</div>
+    <div class="meal-section" id="fs-d0-lunch">
+      <div class="meal-hd"><span class="meal-hd-label">🍽️ 점심</span><div class="meal-hd-line"></div></div>
+    </div>
+    <div class="meal-section" id="fs-d0-dinner">
+      <div class="meal-hd"><span class="meal-hd-label">🌙 저녁</span><div class="meal-hd-line"></div></div>
+    </div>
+    <div class="meal-section" id="fs-d0-cafe">
+      <div class="meal-hd"><span class="meal-hd-label">☕ 카페 / 간식</span><div class="meal-hd-line"></div></div>
+    </div>
+  </div>
+  <!-- DAY 2S food -->
+  <div id="food-d1s" style="display:none;">
+    <div class="sec-title">🗓️ Day 2 · 하라주쿠 &amp; 시부야</div>
+    <div class="meal-section" id="fs-d1-brunch">
+      <div class="meal-hd"><span class="meal-hd-label">🥐 브런치 / 간식</span><div class="meal-hd-line"></div></div>
+    </div>
+    <div class="meal-section" id="fs-d1-lunch">
+      <div class="meal-hd"><span class="meal-hd-label">🍽️ 점심</span><div class="meal-hd-line"></div></div>
+    </div>
+    <div class="meal-section" id="fs-d1-dinner">
+      <div class="meal-hd"><span class="meal-hd-label">🌙 저녁</span><div class="meal-hd-line"></div></div>
+    </div>
+    <div class="meal-section" id="fs-d1-cafe">
+      <div class="meal-hd"><span class="meal-hd-label">☕ 카페</span><div class="meal-hd-line"></div></div>
+    </div>
+  </div>
+  <!-- DAY 2D food -->
+  <div id="food-d1d" style="display:none;">
+    <div class="sec-title">🗓️ Day 2 · 도쿄 디즈니랜드</div>
+    <div class="meal-section" id="fs-dd-lunch">
+      <div class="meal-hd"><span class="meal-hd-label">🍽️ 점심</span><div class="meal-hd-line"></div></div>
+    </div>
+    <div class="meal-section" id="fs-dd-snack">
+      <div class="meal-hd"><span class="meal-hd-label">🍿 간식</span><div class="meal-hd-line"></div></div>
+    </div>
+  </div>
+  <!-- DAY 3 food -->
+  <div id="food-d2" style="display:none;">
+    <div class="sec-title">🗓️ Day 3 · 신주쿠 &amp; 긴자</div>
+    <div class="meal-section" id="fs-d2-lunch">
+      <div class="meal-hd"><span class="meal-hd-label">🍽️ 점심</span><div class="meal-hd-line"></div></div>
+    </div>
+    <div class="meal-section" id="fs-d2-dinner">
+      <div class="meal-hd"><span class="meal-hd-label">🌙 저녁</span><div class="meal-hd-line"></div></div>
+    </div>
+    <div class="meal-section" id="fs-d2-cafe">
+      <div class="meal-hd"><span class="meal-hd-label">☕ 카페 / 디저트</span><div class="meal-hd-line"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 쇼핑리스트 탭 ═══ -->
+<div class="tab-panel" id="shopTab">
+  <div class="sec-title">🛍️ 쇼핑리스트</div>
+
+  <!-- 돈키호테 -->
+  <div class="shop-sec">
+    <div class="shop-cat-hd" style="background:linear-gradient(135deg,#fff5e6,#ffe8cc);">
+      <div class="shop-cat-ic" style="background:#ff9500;color:#fff;">🎯</div>
+      <div class="shop-cat-label">
+        <div class="shop-cat-title">돈키호테</div>
+        <div class="shop-cat-sub">ドン・キホーテ · 과자·뷰티·생활잡화</div>
+      </div>
+    </div>
+    <div id="shopList-donki"></div>
+    <div class="shop-add"><input id="addDonki" placeholder="돈키호테 아이템 추가..." onkeydown="if(event.key==='Enter')addShop('donki')"><button onclick="addShop('donki')">추가</button></div>
+  </div>
+
+  <!-- 편의점 -->
+  <div class="shop-sec">
+    <div class="shop-cat-hd" style="background:linear-gradient(135deg,#dcfff1,#c0f5e0);">
+      <div class="shop-cat-ic" style="background:#00c27a;color:#fff;">🏪</div>
+      <div class="shop-cat-label">
+        <div class="shop-cat-title">편의점</div>
+        <div class="shop-cat-sub">セブン·ファミマ·ローソン · 먹거리·디저트</div>
+      </div>
+    </div>
+    <div id="shopList-cvs"></div>
+    <div class="shop-add"><input id="addCvs" placeholder="편의점 아이템 추가..." onkeydown="if(event.key==='Enter')addShop('cvs')"><button onclick="addShop('cvs')">추가</button></div>
+  </div>
+
+  <!-- 드럭스토어 -->
+  <div class="shop-sec">
+    <div class="shop-cat-hd" style="background:linear-gradient(135deg,#e6f2ff,#cce4ff);">
+      <div class="shop-cat-ic" style="background:#2d8ef5;color:#fff;">💊</div>
+      <div class="shop-cat-label">
+        <div class="shop-cat-title">드럭스토어</div>
+        <div class="shop-cat-sub">マツキヨ·サンドラッグ · 화장품·의약품</div>
+      </div>
+    </div>
+    <div id="shopList-drug"></div>
+    <div class="shop-add"><input id="addDrug" placeholder="드럭스토어 아이템 추가..." onkeydown="if(event.key==='Enter')addShop('drug')"><button onclick="addShop('drug')">추가</button></div>
+  </div>
+</div>
+
+<!-- ═══ 준비 탭 ═══ -->
+<div class="tab-panel" id="prepTab">
+
+  <!-- 짐 체크리스트 -->
+  <div class="prep-sec">
+    <div class="prep-sec-title">🎒 짐 체크리스트</div>
+    <div class="shop-sec-title" style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px;">📋 여권 / 증명서류</div>
+    <div id="prepList-docs"></div>
+    <div class="shop-sec-title" style="font-size:12px;color:var(--muted);font-weight:600;margin:14px 0 6px;">📱 전자기기</div>
+    <div id="prepList-elec"></div>
+    <div class="shop-sec-title" style="font-size:12px;color:var(--muted);font-weight:600;margin:14px 0 6px;">👗 의류 / 잡화</div>
+    <div id="prepList-clothes"></div>
+    <div class="shop-sec-title" style="font-size:12px;color:var(--muted);font-weight:600;margin:14px 0 6px;">🧴 세면 / 위생</div>
+    <div id="prepList-hygiene"></div>
+  </div>
+
+  <!-- 예산 계획 -->
+  <div class="prep-sec">
+    <div class="prep-sec-title">💴 예산 플랜 (2인 기준)</div>
+    <div class="budget-card">
+      <div class="budget-row">
+        <div class="budget-lbl">🛫 항공권<small>왕복 (사전 예약)</small></div>
+        <div class="budget-amt">₩ 별도</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-lbl">🏨 숙박<small>2박 · 신주쿠 기준</small></div>
+        <div class="budget-amt">¥ 30,000</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-lbl">🍽️ 식비<small>3일 · 1인 약 ¥4,000/일</small></div>
+        <div class="budget-amt">¥ 24,000</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-lbl">🎡 입장료<small>스카이트리 + 시부야스카이</small></div>
+        <div class="budget-amt">¥ 14,000</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-lbl">🚇 교통<small>IC 카드 충전 (공항↔도심 포함)</small></div>
+        <div class="budget-amt">¥ 10,000</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-lbl">🛍️ 쇼핑 / 기타</div>
+        <div class="budget-amt">¥ 40,000~</div>
+      </div>
+      <div class="budget-row budget-total">
+        <div class="budget-lbl">💰 합계 (숙박+식비+교통+관광)<small>쇼핑 별도</small></div>
+        <div class="budget-amt">¥ 78,000~</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 날씨 & 팁 -->
+  <div class="prep-sec">
+    <div class="prep-sec-title">☀️ 7월 도쿄 날씨 & 팁</div>
+    <div class="info-card">
+      <div class="info-card-title">🌡️ 날씨</div>
+      <div class="info-row"><div class="info-dot"></div><span>평균 기온 27~32℃, 체감 35℃ 이상. 덥고 습해요!</span></div>
+      <div class="info-row"><div class="info-dot"></div><span>7월 상순은 장마 끝 무렵. 소나기 대비 접이우산 필수</span></div>
+      <div class="info-row"><div class="info-dot"></div><span>자외선 매우 강함 — SPF 50+ 선크림 아침마다 필수</span></div>
+      <div class="info-row"><div class="info-dot"></div><span>실내 에어컨은 강하니까 얇은 가디건 하나 챙기기</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">📱 미리 깔아야 할 앱</div>
+      <div class="app-row">
+        <span class="app-chip">🗺️ Google Maps</span>
+        <span class="app-chip">🚇 Suica (IC카드)</span>
+        <span class="app-chip">🚃 Japan Transit</span>
+        <span class="app-chip">💱 환율 계산기</span>
+        <span class="app-chip">🏰 Tokyo Disney App</span>
+        <span class="app-chip">📷 Camera</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">💴 환전 & 결제</div>
+      <div class="info-row"><div class="info-dot"></div><span>현금 필수! 소규모 식당·신사·전통 가게는 카드 불가</span></div>
+      <div class="info-row"><div class="info-dot"></div><span>출발 전 한국에서 환전하거나 도착 후 공항 ATM 이용</span></div>
+      <div class="info-row"><div class="info-dot"></div><span>Suica 카드 — 지하철, 편의점, 자판기 모두 사용 가능</span></div>
+      <div class="info-row"><div class="info-dot"></div><span>1만엔권 많이 챙기기 (소액권은 금방 소진됨)</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">✈️ 공항 & 이동</div>
+      <div class="info-row"><div class="info-dot"></div><span>나리타/하네다 → 신주쿠: N'EX 또는 리무진버스 약 60-90분</span></div>
+      <div class="info-row"><div class="info-dot"></div><span>출발 3시간 전 공항 도착 권장 (국제선)</span></div>
+      <div class="info-row"><div class="info-dot"></div><span>짐이 많으면 숙소 ↔ 공항 택배 서비스(타쿠하이빈) 추천</span></div>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="bn on" onclick="switchTab('schedule')" id="bn-schedule">
+    <span class="bn-ic">🗓️</span><span class="bn-lbl">일정</span><div class="bn-dot"></div>
+  </button>
+  <button class="bn" onclick="switchTab('food')" id="bn-food">
+    <span class="bn-ic">🍜</span><span class="bn-lbl">맛집</span>
+  </button>
+  <button class="bn" onclick="switchTab('shop')" id="bn-shop">
+    <span class="bn-ic">🛍️</span><span class="bn-lbl">쇼핑리스트</span>
+  </button>
+  <button class="bn" onclick="switchTab('prep')" id="bn-prep">
+    <span class="bn-ic">✈️</span><span class="bn-lbl">준비</span>
+  </button>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ── MESSAGES ── */
+var msgs = {
+  '-1': {av:'🧳', lbl:'D-1 · 출발 전날',        txt:'밍갱아 짐 챙겼어? 🧳 빨리빨리~ 내일이야 내일!!',              bg:'linear-gradient(135deg,#ff9500,#ffb830)'},
+  0:    {av:'🛂', lbl:'Day 1 · 오늘의 메시지', txt:'공주 여권 잘 들고 왔지? 🛂 우리 첫 해외여행이잖아 — 소듕해',    bg:'linear-gradient(135deg,#ff3b5c,#ff6b8a)'},
+  '1s': {av:'🛍️', lbl:'Day 2 · 오늘의 메시지', txt:'오늘 밍갱이 쇼핑 제한 없는 날임 🛍️ 다 사줄게 (안 사줌)',       bg:'linear-gradient(135deg,#7c5cfc,#b06bff)'},
+  '1d': {av:'🏰', lbl:'Day 2 · 오늘의 메시지', txt:'디즈니랜드 뿌시러 가보자고 🏰 밍갱아 달려~!!',                  bg:'linear-gradient(135deg,#ff6b35,#ff9a00)'},
+  2:    {av:'🥺', lbl:'Day 3 · 오늘의 메시지', txt:'벌써 마지막 날이라니.. 🥺 더 있고 싶다 진짜로',                 bg:'linear-gradient(135deg,#1e3a5f,#2d6fa8)'}
+};
+
+/* ── FOOD DATA ── */
+var foodData = {
+  d0:{
+    lunch:[
+      {em:'🍤',name:'다이코쿠야 텐푸라',jp:'大黒家天麩羅',desc:'1887년 아사쿠사 텐동 원조 맛집. 새우튀김 반드시!',meta:'¥1,500 · 아사쿠사',map:'https://www.google.com/maps/dir/?api=1&destination=大黒家天麩羅+浅草&travelmode=transit'},
+      {em:'🍜',name:'아사쿠사 우마이야',jp:'うまいや',desc:'쫄깃한 수제 우동 & 소바 전문 로컬 맛집. 현지인 줄서는 곳',meta:'¥900 · 아사쿠사',map:'https://www.google.com/maps/dir/?api=1&destination=浅草+うまいや&travelmode=transit'},
+      {em:'🍱',name:'치쿠마',jp:'ちくま',desc:'아사쿠사 가정식 정식 전문점. 일본 밥상 느낌 그대로 푸짐하게',meta:'¥1,200 · 아사쿠사',map:'https://www.google.com/maps/dir/?api=1&destination=ちくま+浅草&travelmode=transit'},
+      {em:'🦐',name:'카네마사 해산물 정식',jp:'カネマサ',desc:'아사쿠사 해산물 덮밥 전문. 신선한 해물 조합이 살아있음',meta:'¥1,400 · 아사쿠사',map:'https://www.google.com/maps/dir/?api=1&destination=浅草+海鮮丼&travelmode=transit'},
+      {em:'🍛',name:'카레 하우스 아사쿠사',jp:'浅草カレー',desc:'진하고 깊은 일본식 카레. 스지 카레가 메인메뉴',meta:'¥1,000 · 아사쿠사',map:'https://www.google.com/maps/dir/?api=1&destination=浅草+カレー&travelmode=transit'}
+    ],
+    dinner:[
+      {em:'🍢',name:'아메요코 이자카야',jp:'アメ横',desc:'야키토리 + 하이볼 현지 분위기. 오픈테라스 좌석 인기',meta:'¥2,500 · 우에노',map:'https://www.google.com/maps/dir/?api=1&destination=アメ横+上野&travelmode=transit'},
+      {em:'🥩',name:'카메이도 호루몬',jp:'亀戸ホルモン',desc:'저렴하고 맛있는 야키니쿠 이자카야. 모츠나베도 강추',meta:'¥2,000 · 카메이도',map:'https://www.google.com/maps/dir/?api=1&destination=亀戸ホルモン&travelmode=transit'},
+      {em:'🍺',name:'긴파치 본점',jp:'金八本店',desc:'우에노 현지인 이자카야. 꼬치구이 + 오카라 두부 강추',meta:'¥2,200 · 우에노',map:'https://www.google.com/maps/dir/?api=1&destination=金八+上野&travelmode=transit'},
+      {em:'🫕',name:'우에노 모츠나베',jp:'上野もつ鍋',desc:'내장 전골 전문. 된장 육수 모츠나베 시메는 짬뽕면',meta:'¥2,800 · 우에노',map:'https://www.google.com/maps/dir/?api=1&destination=上野+もつ鍋&travelmode=transit'},
+      {em:'🍣',name:'우에노 스시 야타이',jp:'上野 すし屋台',desc:'포장마차 스타일 스시. 저녁 분위기 최고. 맥주 한 캔이랑',meta:'¥2,000 · 우에노',map:'https://www.google.com/maps/dir/?api=1&destination=上野+寿司&travelmode=transit'}
+    ],
+    cafe:[
+      {em:'🍡',name:'닌교야키 & 멜론빵',jp:'仲見世',desc:'나카미세 거리 전통 간식. 갓 구운 닌교야키 먹으면서 구경',meta:'¥300~ · 나카미세',map:'https://www.google.com/maps/dir/?api=1&destination=仲見世通り+浅草&travelmode=transit'},
+      {em:'☕',name:'아사쿠사 커피 로스터스',jp:'浅草コーヒー',desc:'아사쿠사 골목 감성 스페셜티 카페. 핸드드립 추천',meta:'¥600~ · 아사쿠사',map:'https://www.google.com/maps/dir/?api=1&destination=浅草+スペシャルティコーヒー&travelmode=transit'},
+      {em:'🍫',name:'댄델리온 초콜릿',jp:'Dandelion Chocolate',desc:'빈투바 초콜릿 공방 카페. 핫초코 & 마들렌 강추!',meta:'¥700~ · 아사쿠사',map:'https://www.google.com/maps/dir/?api=1&destination=Dandelion+Chocolate+浅草&travelmode=transit'},
+      {em:'🍮',name:'카야바 커피',jp:'カヤバ珈琲',desc:'1938년 창업 빈티지 카페. 에그 토스트와 커피 세트가 명물',meta:'¥800~ · 우에노',map:'https://www.google.com/maps/dir/?api=1&destination=カヤバ珈琲+上野&travelmode=transit'}
+    ]
+  },
+  d1s:{
+    brunch:[
+      {em:'🥞',name:'하라주쿠 크레페',jp:'原宿クレープ',desc:'다케시타 거리 명물. 딸기크림 or 초코바나나 추천',meta:'¥700~ · 하라주쿠',map:'https://www.google.com/maps/dir/?api=1&destination=原宿+クレープ&travelmode=transit'},
+      {em:'🥐',name:'모네 브런치 카페',jp:'モネ',desc:'오모테산도 감성 브런치. 에그베네딕트 & 판케이크 인기',meta:'¥1,400~ · 오모테산도',map:'https://www.google.com/maps/dir/?api=1&destination=表参道+ブランチカフェ&travelmode=transit'},
+      {em:'🥨',name:'앤트러사이트 카페',jp:'Antler Cafe',desc:'오모테산도 힙한 커피숍. 크루아상 & 커피 조합 최고',meta:'¥900~ · 오모테산도',map:'https://www.google.com/maps/dir/?api=1&destination=表参道+スペシャルティコーヒー&travelmode=transit'},
+      {em:'🧇',name:'J.S. 판케이크 카페',jp:'J.S. Pancake Cafe',desc:'하라주쿠 명물 두꺼운 수플레 판케이크. 2인분 시키면 딱!',meta:'¥1,200~ · 하라주쿠',map:'https://www.google.com/maps/dir/?api=1&destination=J.S.+Pancake+Cafe+原宿&travelmode=transit'}
+    ],
+    lunch:[
+      {em:'🥩',name:'규카츠 모토무라',jp:'牛かつもと村',desc:'두툼한 규카츠 원조 맛집. 돌판에 직접 구워 먹기 재미',meta:'¥1,500 · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=牛かつもと村+渋谷&travelmode=transit'},
+      {em:'🍛',name:'네기시 탄탄 전문',jp:'ねぎし',desc:'소 혀(탄탄) & 보리밥 전문. 부드럽고 가성비 최고',meta:'¥1,200 · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=ねぎし+渋谷&travelmode=transit'},
+      {em:'🐟',name:'오모테산도 씨푸드',jp:'表参道シーフード',desc:'신선한 해산물 런치 코스. 오마카세 스타일 런치',meta:'¥2,000 · 오모테산도',map:'https://www.google.com/maps/dir/?api=1&destination=表参道+シーフードランチ&travelmode=transit'},
+      {em:'🍝',name:'살바토레 쿠오모',jp:'サルヴァトーレ',desc:'오모테산도 인기 이탈리안. 화덕 나폴리 피자 맛집',meta:'¥1,800 · 오모테산도',map:'https://www.google.com/maps/dir/?api=1&destination=サルバトーレクオモ+表参道&travelmode=transit'},
+      {em:'🫔',name:'시부야 푸드홀',jp:'渋谷フードホール',desc:'시부야 스크램블스퀘어 내 다양한 맛집 모임. 고르는 재미!',meta:'¥1,500~ · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=渋谷スクランブルスクエア+フードホール&travelmode=transit'}
+    ],
+    dinner:[
+      {em:'🍜',name:'이치란 라멘',jp:'一蘭 渋谷店',desc:'개인 칸막이 돈코츠 라멘. 달걀 추가 필수! 심야에도 영업',meta:'¥1,200 · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=一蘭+渋谷&travelmode=transit'},
+      {em:'🫕',name:'나베조 샤부샤부',jp:'鍋ぞう 渋谷',desc:'샤부샤부 & 스키야키 뷔페. 야채무한+와규 추가 추천',meta:'¥2,500 · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=鍋ぞう+渋谷&travelmode=transit'},
+      {em:'🍣',name:'히카리 스시 카운터',jp:'光寿司 渋谷',desc:'시부야 카운터 스시 저녁. 오마카세 코스 분위기 있음',meta:'¥3,000 · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=渋谷+寿司&travelmode=transit'},
+      {em:'🥟',name:'텐동 덴베이',jp:'天丼でん平',desc:'시부야 골목 텐동 전문. 새우+야채 조합 황금비율',meta:'¥1,400 · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=渋谷+天丼&travelmode=transit'},
+      {em:'🍖',name:'야키토리 토리키조쿠',jp:'鳥貴族',desc:'280엔 균일가 야키토리 이자카야. 맥주 한 잔이랑 완벽',meta:'¥2,000 · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=鳥貴族+渋谷&travelmode=transit'}
+    ],
+    cafe:[
+      {em:'☕',name:'Omotesando Koffee',jp:'オモテサンドウコーヒー',desc:'일본 스페셜티 커피의 정수. 작지만 완벽한 공간',meta:'¥600~ · 오모테산도',map:'https://www.google.com/maps/dir/?api=1&destination=Omotesando+Koffee&travelmode=transit'},
+      {em:'💙',name:'블루보틀 아오야마',jp:'Blue Bottle 青山',desc:'넓고 감성적인 블루보틀 도쿄 1호점. 오리지널 굿즈도 있음',meta:'¥700~ · 아오야마',map:'https://www.google.com/maps/dir/?api=1&destination=Blue+Bottle+Coffee+青山&travelmode=transit'},
+      {em:'🌿',name:'스타벅스 쓰타야',jp:'スタバ蔦屋書店',desc:'시부야 교차로 뷰. 2층 창가자리에서 스크램블 구경',meta:'¥600~ · 시부야',map:'https://www.google.com/maps/dir/?api=1&destination=スターバックス+蔦屋書店+渋谷&travelmode=transit'},
+      {em:'🍦',name:'메종 이치코 아오야마',jp:'maison ico',desc:'프랑스식 소프트크림 전문점. 인스타 감성 최고',meta:'¥600~ · 아오야마',map:'https://www.google.com/maps/dir/?api=1&destination=青山+ソフトクリーム&travelmode=transit'}
+    ]
+  },
+  d1d:{
+    lunch:[
+      {em:'🃏',name:'하트의 여왕 뷔페',jp:'クイーン・オブ・ハートのバンケットホール',desc:'왕궁 인테리어 디즈니 인기 뷔페. 앱 예약 필수!',meta:'¥3,500 · 디즈니랜드',map:'https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit'},
+      {em:'🏴‍☠️',name:'블루 바이유 레스토랑',jp:'ブルーバイユー',desc:'캐리비안 분위기 레스토랑. 카리브의 해적 옆자리에서 식사!',meta:'¥4,500 · 디즈니랜드',map:'https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit'},
+      {em:'🌲',name:'아르파인 테라스',jp:'アルパインテラス',desc:'판타지랜드 내 테라스 레스토랑. 줄 짧고 뷰 좋음',meta:'¥2,800 · 디즈니랜드',map:'https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit'},
+      {em:'🍔',name:'더 다이아몬드 호스슈',jp:'ダイヤモンドホースシュー',desc:'웨스턴랜드 스타일 레스토랑. 런치 세트 가성비 좋음',meta:'¥2,500 · 디즈니랜드',map:'https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit'}
+    ],
+    snack:[
+      {em:'🍿',name:'디즈니 팝콘 버킷',jp:'ポップコーン',desc:'카라멜, 스모크치즈 등 시즌 한정 맛. 버킷 구매하면 리필 가능!',meta:'¥400~ · 디즈니랜드',map:'https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit'},
+      {em:'🧇',name:'미키 와플 아이스',jp:'ミッキーワッフル',desc:'미키 모양 와플 + 소프트아이스크림. 사진 필수 아이템',meta:'¥500 · 디즈니랜드',map:'https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit'},
+      {em:'🥐',name:'갈릭 슈림프 & 크루아상',jp:'スナック',desc:'환상적인 마늘버터 새우 크루아상. 줄 서도 먹을 가치 있음',meta:'¥600 · 디즈니랜드',map:'https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit'},
+      {em:'🍦',name:'민트 초코 소프트크림',jp:'ソフトクリーム',desc:'7월 시즌 한정 메뉴. 없어지기 전에 먹어야 함!',meta:'¥400 · 디즈니랜드',map:'https://www.google.com/maps/dir/?api=1&destination=東京ディズニーランド&travelmode=transit'}
+    ]
+  },
+  d2:{
+    lunch:[
+      {em:'🍣',name:'스시로',jp:'スシロー 新宿',desc:'고퀄 회전초밥 체인. 1접시 100~300엔, 한국인 성지',meta:'¥1,500 · 신주쿠',map:'https://www.google.com/maps/dir/?api=1&destination=スシロー+新宿&travelmode=transit'},
+      {em:'🥩',name:'긴자 규카츠 이치니산',jp:'銀座牛かつ壱弐参',desc:'긴자 입구 규카츠 맛집. 런치 세트 가성비 최고',meta:'¥1,600 · 긴자',map:'https://www.google.com/maps/dir/?api=1&destination=牛かつ+銀座&travelmode=transit'},
+      {em:'🍱',name:'히사고 소바',jp:'久兵衛 新宿',desc:'신주쿠 정통 수제 소바 전문점. 쯔유 맛이 깊음',meta:'¥1,000 · 신주쿠',map:'https://www.google.com/maps/dir/?api=1&destination=新宿+そば&travelmode=transit'},
+      {em:'🍜',name:'후쿠시마야 라멘',jp:'福島屋',desc:'신주쿠 골목 숨겨진 미소라멘 맛집. 진한 국물이 특징',meta:'¥1,100 · 신주쿠',map:'https://www.google.com/maps/dir/?api=1&destination=新宿+味噌ラーメン&travelmode=transit'},
+      {em:'🐠',name:'긴자 해산물 런치',jp:'銀座 海鮮',desc:'긴자 백화점 지하 해산물 런치. 마지막 날 풍성하게',meta:'¥2,500 · 긴자',map:'https://www.google.com/maps/dir/?api=1&destination=銀座+海鮮ランチ&travelmode=transit'}
+    ],
+    dinner:[
+      {em:'🥩',name:'야키니쿠 라이크',jp:'焼肉ライク 東京駅',desc:'1인 와규 야키니쿠. 주문은 1인분씩. 마지막 밤 특별하게',meta:'¥3,000 · 도쿄역',map:'https://www.google.com/maps/dir/?api=1&destination=焼肉ライク+東京駅&travelmode=transit'},
+      {em:'🫕',name:'긴자 샤부샤부 마쓰',jp:'銀座しゃぶしゃぶ松',desc:'긴자 고급 샤부샤부. 마지막 날 기념 저녁으로 최고!',meta:'¥4,500 · 긴자',map:'https://www.google.com/maps/dir/?api=1&destination=銀座+しゃぶしゃぶ&travelmode=transit'},
+      {em:'🍣',name:'도쿄역 스시 오마카세',jp:'東京駅 鮨',desc:'도쿄역 내 카운터 스시 오마카세. 여행 마무리로 완벽',meta:'¥5,000 · 도쿄역',map:'https://www.google.com/maps/dir/?api=1&destination=東京駅+鮨&travelmode=transit'},
+      {em:'🦞',name:'긴자 랍스터 비스트로',jp:'銀座 オマール',desc:'오마르 새우 요리 전문. 마지막 밤 밍갱이한테 쏴주기',meta:'¥5,500 · 긴자',map:'https://www.google.com/maps/dir/?api=1&destination=銀座+オマール海老&travelmode=transit'},
+      {em:'🍖',name:'신주쿠 코리도 가 이자카야',jp:'新宿コリドー街',desc:'신주쿠 이자카야 골목. 여행 마지막 밤 분위기 최고',meta:'¥2,500 · 신주쿠',map:'https://www.google.com/maps/dir/?api=1&destination=新宿コリドー街&travelmode=transit'}
+    ],
+    cafe:[
+      {em:'🧁',name:'앙리 샤르팡티에',jp:'アンリ・シャルパンティエ',desc:'이세탄 지하 고급 마들렌 & 피낭시에. 선물로도 최고!',meta:'¥400~ · 신주쿠',map:'https://www.google.com/maps/dir/?api=1&destination=アンリシャルパンティエ+新宿&travelmode=transit'},
+      {em:'🫖',name:'긴자 웨스트',jp:'銀座ウエスト',desc:'1947년 창업 정통 홍차 살롱. 클래식하고 우아한 분위기',meta:'¥1,000 · 긴자',map:'https://www.google.com/maps/dir/?api=1&destination=銀座ウエスト&travelmode=transit'},
+      {em:'🍰',name:'르 뱅 쇼 긴자',jp:'LE VIN CHAUD 銀座',desc:'긴자 디저트 카페. 마카롱 & 케이크 종류 다양함',meta:'¥800~ · 긴자',map:'https://www.google.com/maps/dir/?api=1&destination=銀座+デザートカフェ&travelmode=transit'},
+      {em:'🍮',name:'시마무라 커피 신주쿠',jp:'嶋村珈琲',desc:'신주쿠 서울 골목 오래된 커피 전문점. 핸드드립 장인',meta:'¥700~ · 신주쿠',map:'https://www.google.com/maps/dir/?api=1&destination=新宿+珈琲&travelmode=transit'}
+    ]
+  }
+};
+
+/* ── SHOP ITEMS ── */
+var shopItems = {
+  donki:[
+    {em:'🍫',name:'킷캣 한정 에디션 박스',jp:'キットカット アソートBOX',desc:'일본 한정 맛 모음 — 말차, 딸기, 자스민 등. 선물용으로 최고! 박스 패키지라 그냥 들고 가면 됨.',price:'¥1,200~2,500',where:'돈키호테 전점',tip:'대용량 박스 버전이 낱개보다 훨씬 이득. 계산대 앞 진열대에 있음.',done:false},
+    {em:'🍬',name:'자가리코 지역한정 세트',jp:'じゃがりこ アソート',desc:'치즈, 타라코버터, 고야 등 한국에서 못 구하는 맛 집합체. 돈키에서 세트로 사면 저렴.',price:'¥150~250/개',where:'돈키호테·편의점',tip:'여러 맛 한 바구니에 담으면 할인 행사 상품도 있음. 박스채 사는 게 가성비 최고!',done:false},
+    {em:'🥤',name:'산토리 하이볼 캔',jp:'サントリーハイボール缶',desc:'가쿠빈 하이볼 캔. 한국보다 훨씬 저렴하고 맛도 진함. 숙소 돌아와서 한 캔 필수!',price:'¥180~220/캔',where:'돈키호테·슈퍼',tip:'6캔 팩으로 사면 더 저렴. 도수 확인하고 고르기 — 9% vs 5% 있음.',done:false},
+    {em:'🎰',name:'가챠가챠 캡슐 뽑기',jp:'ガチャガチャ カプセルトイ',desc:'피규어, 열쇠고리, 미니어처 등 완전 랜덤. 운에 맡기고 한 번쯤은 꼭 해봐야 함!',price:'¥300~500/회',where:'돈키호테 입구·오락실',tip:'식품 미니어처 시리즈나 하이큐 시리즈가 제일 귀여움 🎁',done:false},
+    {em:'🧴',name:'DHC 딥 클렌징 오일',jp:'DHC薬用ディープクレンジングオイル',desc:'일본 드럭스토어 클렌징 1위. 메이크업 싹 다 지워주고 자극 없음. 한국보다 저렴!',price:'¥900~1,200',where:'돈키호테·마쯔키요',tip:'200ml 대용량이 이득. 면세 적용되는지 계산대에서 꼭 확인!',done:false},
+    {em:'🌸',name:'향수 미니 세트',jp:'パルファン ミニセット',desc:'가격 대비 퀄리티 좋은 일본 향수들. 여행용 미니 사이즈로 딱 맞고 케이스도 귀여움.',price:'¥800~1,500',where:'돈키호테 화장품코너',tip:'테스터 꼭 뿌려보고 구매! 피부 테스트 잊지 말기.',done:false},
+    {em:'🍭',name:'도쿄 바나나',jp:'東京ばな奈',desc:'도쿄 여행 기념품 베스트 1위. 바나나 크림 안에 가득. 공항에서도 살 수 있지만 돈키가 더 저렴.',price:'¥1,200~1,800/박스',where:'돈키호테·공항',tip:'상온 보관 가능. 개봉 후 빨리 먹기. 팬더 한정 디자인 있으면 꼭 사기!',done:false}
+  ],
+  cvs:[
+    {em:'🍰',name:'로손 바스크 치즈케이크',jp:'ローソン バスクチーズケーキ',desc:'편의점 디저트 역대급 퀄. 진하고 쫀득한 치즈케이크. 냉장 코너에서 바로 찾을 수 있음.',price:'¥230~280',where:'로손 전점',tip:'저녁에 가면 품절 잦음. 오전이나 낮에 사두기!',done:false},
+    {em:'🍙',name:'참치마요 오니기리',jp:'ツナマヨおにぎり',desc:'일본 편의점 오니기리 맛은 한국과 차원이 다름. 쌀 퀄도 다르고 속 재료도 다름.',price:'¥130~160',where:'세븐일레븐·패밀리마트·로손',tip:'세븐일레븐 오니기리가 쌀 퀄 최상이라는 게 정설. 연어·쇼유·다시마 다 추천!',done:false},
+    {em:'🍗',name:'편의점 치킨 2종',jp:'からあげクン·ファミチキ',desc:'로손 카라아게쿤 vs 패밀리마트 파미치킨. 일본 여행 왔으면 두 개 다 먹어야 함!',price:'¥230~300/개',where:'로손·패밀리마트 계산대 옆',tip:'카라아게쿤은 레귤러+레드(매운맛) 둘 다 추천. 따끈하게 데워줌.',done:false},
+    {em:'🍞',name:'패밀리마트 크림빵',jp:'ファミマ クリームパン',desc:'폭신하고 커스터드 크림 꽉 찬 편의점 빵계의 전설. 멜론빵도 같이 사기.',price:'¥130~180',where:'패밀리마트 전점',tip:'빵 코너 앞에 따끈하게 갓 구운 것도 있으니 타이밍 잘 노리기.',done:false},
+    {em:'🍮',name:'세븐 나메라카 푸딩',jp:'セブン なめらかプリン',desc:'세븐일레븐 독보적 스테디셀러. 부드럽고 카라멜 소스가 진함. 한국에서 못 사는 맛!',price:'¥160~200',where:'세븐일레븐 전점',tip:'뚜껑 뒤집어서 그릇에 올려 꺼내면 인스타 사진 각도 나옴 📸',done:false},
+    {em:'🧃',name:'이에몬 녹차 PET',jp:'サントリー 伊右衛門',desc:'일본 편의점 무가당 녹차는 퀄이 다름. 산토리 이에몬, 기린 이몬차 꼭 마셔봐야 함.',price:'¥140~180',where:'모든 편의점',tip:'아이스 냉장 버전이 따뜻한 것보다 맛있음. 페트병 뚜껑 색깔로 음료 구분.',done:false},
+    {em:'🍓',name:'딸기 다이후쿠',jp:'いちご大福',desc:'편의점 화과자 중 최고. 쫀득한 떡 + 달달한 팥 + 통 딸기의 조합. 7월 한정 가능.',price:'¥150~200',where:'세븐일레븐·로손',tip:'유통기한 짧으니 당일 구매 + 당일 섭취 추천!',done:false}
+  ],
+  drug:[
+    {em:'🌞',name:'아네사 퍼펙트UV 선크림',jp:'アネッサ パーフェクトUV SPF50+',desc:'일본 여름 필수템. 땀과 물에 강하고 발림성 최고. 한국보다 훨씬 저렴하게 살 수 있음.',price:'¥2,200~2,800',where:'마쯔키요·선드럭',tip:'60ml보다 90ml 사이즈가 가성비 좋음. 면세 여부 꼭 확인!',done:false},
+    {em:'💧',name:'하다라보 고쿠쥰 히알루론산',jp:'肌ラボ 極潤 ヒアルロン液',desc:'일본 국민 보습 토너. 히알루론산 5종 함유. 건성·복합성 피부 모두 OK. 진짜 촉촉함.',price:'¥700~1,000',where:'마쯔키요·코코카라파인',tip:'170ml 대용량이 가성비 최고. 초특농 버전(超しっとり)도 있음!',done:false},
+    {em:'✨',name:'멜라노CC 비타민C 세럼',jp:'メラノCC 集中対策美容液',desc:'모공·잡티·칙칙한 피부에 효과적. 비타민C 고농도 세럼. 가성비 압도적이라 여행 때 꼭 사야 함.',price:'¥1,200~1,500',where:'마쯔키요·드럭스토어 전반',tip:'직사광선 피해서 사용. 아침보다 밤 사용 추천. 냉장 보관 더 좋음.',done:false},
+    {em:'👁️',name:'로토 쿨 아이드롭',jp:'ロートクールα 目薬',desc:'여행 중 눈 피로 해소 필수. 청량감 강한 일본 드럭스토어 베스트셀러 안약.',price:'¥400~700',where:'드럭스토어·편의점',tip:'쿨 단계 숫자 높을수록 청량감 강함. 처음이면 c 또는 α 추천!',done:false},
+    {em:'💊',name:'이브 진통제 (EVE)',jp:'イブA錠 EVE',desc:'두통·생리통에 빠른 일본 베스트 진통제. 한국 타이레놀보다 효과 강한 편.',price:'¥800~1,200',where:'마쯔키요·선드럭',tip:'이부프로펜 계열이라 위장 약하면 식후 복용. 빈속 복용 주의!',done:false},
+    {em:'🌿',name:'오로나인 다용도 크림',jp:'オロナインH軟膏',desc:'일본 국민 만능 크림. 거칠어진 팔꿈치·발뒤꿈치·트러블 피부에 올인원으로 사용 가능.',price:'¥400~700',where:'마쯔키요·선드럭·이온',tip:'100g 대용량 사면 1~2년 쓸 수 있음. 한국보다 거의 절반 가격!',done:false},
+    {em:'🎀',name:'캔메이크 파운데이션 쿠션',jp:'キャンメイク パーフェクトスタイラー',desc:'저렴한데 지속력 좋고 커버력도 충분. 일본 드럭스토어 화장품 중 가성비 최강.',price:'¥900~1,300',where:'마쯔키요·드럭스토어',tip:'21호·23호가 한국인 피부톤에 잘 맞음. 쿠션 + 리필 세트 사기.',done:false}
+  ]
+};
+
+/* ── PREP CHECKLIST ── */
+var prepItems = {
+  docs:[
+    {txt:'여권 (유효기간 6개월 이상 확인)',done:false},
+    {txt:'항공권 e-티켓 출력 또는 스크린샷',done:false},
+    {txt:'숙소 예약 확인서',done:false},
+    {txt:'여행자 보험 증서',done:false},
+    {txt:'교통카드 / 엔화 현금 준비',done:false}
+  ],
+  elec:[
+    {txt:'스마트폰 & 충전기',done:false},
+    {txt:'보조배터리 (기내반입 용량 확인)',done:false},
+    {txt:'멀티어댑터 (일본 돼지코 필요 없음)',done:false},
+    {txt:'카메라 & 여분 메모리카드',done:false},
+    {txt:'이어폰',done:false},
+    {txt:'핀타입 충전 케이블 여분',done:false}
+  ],
+  clothes:[
+    {txt:'가벼운 여름옷 3일치',done:false},
+    {txt:'얇은 가디건 (실내 에어컨 대비)',done:false},
+    {txt:'편한 운동화 (하루 1.5만보 예상)',done:false},
+    {txt:'접이 우산 or 우비 (소나기 대비)',done:false},
+    {txt:'선글라스',done:false},
+    {txt:'에코백 (쇼핑 대비)',done:false}
+  ],
+  hygiene:[
+    {txt:'선크림 SPF50+ (넉넉하게)',done:false},
+    {txt:'손소독제 & 물티슈',done:false},
+    {txt:'비상 약 (소화제, 지사제, 두통약)',done:false},
+    {txt:'밴드 & 발뒤꿈치 패드',done:false},
+    {txt:'기초 화장품 & 세면도구',done:false},
+    {txt:'휴대용 선풍기 or 쿨링 스프레이',done:false}
+  ]
+};
+
+/* ── DATE LOGIC ── */
+var isTripStarted = false;
+var TRIP = [new Date(2026,6,10),new Date(2026,6,11),new Date(2026,6,12)]; // Jul 10~12
+
+function applyMsg(key){
+  var m=msgs[key];
+  // 히어로 카드
+  document.getElementById('msgAv').textContent=m.av;
+  document.getElementById('msgLbl').textContent=m.lbl;
+  document.getElementById('msgTxt').textContent=m.txt;
+  document.querySelector('.hero-msg-row').style.background=m.bg;
+}
+
+/* ── STATE ── */
+var state = {
+  tab: 'schedule',
+  day: 0,
+  d2: 's',
+  sel: {
+    'd0-lunch':0,'d0-dinner':0,'d0-cafe':0,
+    'd1-brunch':0,'d1-lunch':0,'d1-dinner':0,'d1-cafe':0,
+    'dd-lunch':0,'dd-snack':0,
+    'd2-lunch':0,'d2-dinner':0,'d2-cafe':0
+  }
+};
+
+/* ── MAP ── */
+var map, mapLayers=[];
+var mapSpots = {
+  0:[{n:'센소지',lat:35.7148,lng:139.7967},{n:'나카미세',lat:35.7138,lng:139.7958},{n:'스카이트리',lat:35.7101,lng:139.8107},{n:'우에노공원',lat:35.7145,lng:139.7715},{n:'아메요코',lat:35.7094,lng:139.7744}],
+  '1s':[{n:'메이지신궁',lat:35.6763,lng:139.6993},{n:'다케시타거리',lat:35.6702,lng:139.7027},{n:'오모테산도',lat:35.6653,lng:139.7126},{n:'시부야스크램블',lat:35.6598,lng:139.7006},{n:'시부야스카이',lat:35.6586,lng:139.7024}],
+  '1d':[{n:'마이하마역',lat:35.6314,lng:139.8793},{n:'도쿄디즈니랜드',lat:35.6329,lng:139.8804}],
+  2:[{n:'신주쿠교엔',lat:35.6851,lng:139.7100},{n:'이세탄',lat:35.6918,lng:139.7036},{n:'긴자식스',lat:35.6697,lng:139.7632},{n:'도쿄스테이션',lat:35.6812,lng:139.7671}]
+};
+
+function mkIcon(i,isD){
+  var c=isD?'#0984e3':'#e8223a';
+  var nums=['①','②','③','④','⑤','⑥'];
+  return L.divIcon({className:'',html:'<div style="background:'+c+';color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.22);font-family:sans-serif;">'+(nums[i]||i+1)+'</div>',iconSize:[28,28],iconAnchor:[14,14]});
+}
+
+function loadMap(key){
+  mapLayers.forEach(function(l){map.removeLayer(l);}); mapLayers=[];
+  var ps=mapSpots[key]; if(!ps) return;
+  var ll=[];
+  ps.forEach(function(p,i){
+    var isD=(key==='1d');
+    var m=L.marker([p.lat,p.lng],{icon:mkIcon(i,isD)}).addTo(map).bindPopup('<strong>'+(i+1)+'. '+p.n+'</strong>');
+    mapLayers.push(m); ll.push([p.lat,p.lng]);
+  });
+  if(ll.length>1){var poly=L.polyline(ll,{color:'#e8223a',weight:2.5,opacity:.5,dashArray:'7,5'}).addTo(map); mapLayers.push(poly); map.fitBounds(poly.getBounds(),{padding:[32,32]});}
+  else if(ll.length===1){map.setView(ll[0],14);}
+}
+
+function focusPin(day,idx){
+  var m=mapLayers[idx]; if(m&&m.getLatLng){map.setView(m.getLatLng(),16,{animate:true});m.openPopup();}
+}
+
+/* ── RENDER FOOD ── */
+function renderFood(){
+  var dayKey;
+  if(state.day===0){dayKey='d0';}
+  else if(state.day===1){dayKey=(state.d2==='s')?'d1s':'d1d';}
+  else{dayKey='d2';}
+  var data=foodData[dayKey];
+  if(!data) return;
+  Object.keys(data).forEach(function(meal){
+    var dk=(state.day===0?'d0':state.day===1?(state.d2==='d'?'dd':'d1'):'d2');
+    var selKey=dk+'-'+meal;
+    var sec=document.getElementById('fs-'+dk+'-'+meal);
+    if(!sec) return;
+    var opts=data[meal];
+    var selIdx=state.sel[selKey]||0;
+    var hd=sec.querySelector('.meal-hd-label');
+    var hdTxt=hd?hd.textContent:'';
+    var html='<div class="meal-hd"><span class="meal-hd-label">'+hdTxt+'</span><div class="meal-hd-line"></div></div>';
+    opts.forEach(function(opt,i){
+      html+='<div class="food-opt'+(i===selIdx?' sel':'')+'" onclick="pickFood(\''+selKey+'\','+i+')">'
+        +'<div class="fo-em">'+opt.em+'</div>'
+        +'<div class="fo-info">'
+          +'<div class="fo-name">'+opt.name+'<span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:4px;">'+opt.jp+'</span></div>'
+          +'<div class="fo-desc">'+opt.desc+'</div>'
+          +'<div class="fo-meta">'+opt.meta+'</div>'
+        +'</div>'
+        +'<div class="fo-right">'
+          +'<div class="fo-check">'+(i===selIdx?'✓':'')+'</div>'
+          +'<a class="fo-map" href="'+opt.map+'" target="_blank" onclick="event.stopPropagation()">📍 지도</a>'
+        +'</div>'
+      +'</div>';
+    });
+    sec.innerHTML=html;
+  });
+}
+
+/* ── PICK FOOD ── */
+function pickFood(selKey,idx){
+  state.sel[selKey]=idx;
+  renderFood();
+  var parts=selKey.split('-');
+  var dk=parts[0]; var meal=parts.slice(1).join('-');
+  var foodKey;
+  if(dk==='d0'){foodKey='d0';}
+  else if(dk==='d1'){foodKey='d1s';}
+  else if(dk==='dd'){foodKey='d1d';}
+  else{foodKey='d2';}
+  var data=foodData[foodKey];
+  if(!data||!data[meal]) return;
+  var opt=data[meal][idx];
+  var emEl=document.getElementById('em-'+dk+'-'+meal);
+  var nmEl=document.getElementById('nm-'+dk+'-'+meal);
+  var dsEl=document.getElementById('ds-'+dk+'-'+meal);
+  var mpEl=document.getElementById('mp-'+dk+'-'+meal);
+  if(emEl) emEl.textContent=opt.em;
+  if(nmEl) nmEl.textContent=opt.name;
+  if(dsEl) dsEl.textContent=opt.desc+' · '+opt.meta.split(' · ')[0];
+  if(mpEl) mpEl.href=opt.map;
+}
+
+/* ── JUMP TO FOOD ── */
+function jumpFood(day,meal){
+  switchTab('food');
+  setTimeout(function(){
+    var dayStr=(day===0?'d0':day===1?(state.d2==='d'?'dd':'d1'):(day==='disney'?'dd':'d2'));
+    var sec=document.getElementById('fs-'+dayStr+'-'+meal);
+    if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+  },100);
+}
+
+/* ── TAB SWITCHING ── */
+function switchTab(t){
+  state.tab=t;
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on');});
+  document.getElementById(t+'Tab').classList.add('on');
+  document.querySelectorAll('.bn').forEach(function(b){
+    b.classList.remove('on');
+    var dot=b.querySelector('.bn-dot');
+    if(dot) dot.remove();
+  });
+  var active=document.getElementById('bn-'+t);
+  active.classList.add('on');
+  if(!active.querySelector('.bn-dot')){var d=document.createElement('div');d.className='bn-dot';active.appendChild(d);}
+
+  var mapWrap=document.getElementById('mapWrap');
+  var daySw=document.getElementById('daySw');
+  var d2bar=document.getElementById('d2bar');
+  mapWrap.style.display=(t==='schedule')?'block':'none';
+  daySw.style.display=(t==='shop'||t==='prep')?'none':'flex';
+  d2bar.classList.toggle('show',(state.day===1 && t==='schedule'));
+
+  if(t==='schedule'||t==='food'){
+    setTimeout(function(){if(t==='schedule')map.invalidateSize();},60);
+    renderFood(); showDayContent();
+  }
+  if(t==='shop') renderShop();
+  if(t==='prep') renderPrep();
+}
+
+/* ── DAY SWITCHING ── */
+function setDay(d){
+  state.day=d;
+  document.querySelectorAll('.ds').forEach(function(b,i){b.classList.toggle('on',i===d);});
+  var d2bar=document.getElementById('d2bar');
+  d2bar.classList.toggle('show', d===1 && state.tab==='schedule');
+  renderFood(); showDayContent();
+  if(state.tab==='schedule'){
+    var mk=(d===0)?0:(d===1?'1'+state.d2:2);
+    setTimeout(function(){map.invalidateSize();loadMap(mk);},60);
+  }
+}
+
+function setD2(m){
+  state.d2=m;
+  document.querySelectorAll('.d2p').forEach(function(b){b.classList.toggle('on',(m==='s'?b.textContent.indexOf('시부야')>-1:b.textContent.indexOf('디즈니')>-1));});
+  renderFood(); showDayContent();
+  if(state.tab==='schedule'){setTimeout(function(){map.invalidateSize();loadMap('1'+m);},60);}
+}
+
+function showDayContent(){
+  ['sch-d0','sch-d1s','sch-d1d','sch-d2'].forEach(function(id){document.getElementById(id).style.display='none';});
+  var schId=(state.day===0)?'sch-d0':(state.day===1?('sch-d1'+(state.d2==='d'?'d':'s')):'sch-d2');
+  document.getElementById(schId).style.display='block';
+  ['food-d0','food-d1s','food-d1d','food-d2'].forEach(function(id){document.getElementById(id).style.display='none';});
+  var foodId=(state.day===0)?'food-d0':(state.day===1?('food-d1'+(state.d2==='d'?'d':'s')):'food-d2');
+  document.getElementById(foodId).style.display='block';
+}
+
+/* ── SHOP ── */
+function renderShop(){
+  ['donki','cvs','drug'].forEach(function(cat){
+    var el=document.getElementById('shopList-'+cat);
+    if(!el) return;
+    el.innerHTML=shopItems[cat].map(function(item,i){
+      var capCat=cat.charAt(0).toUpperCase()+cat.slice(1);
+      return '<div class="prod-card'+(item.done?' done':'')+'" onclick="showProductModal(\''+cat+'\','+i+')">'
+        +'<div class="prod-check" onclick="toggleShop(event,\''+cat+'\','+i+')">'+(item.done?'✓':'')+'</div>'
+        +'<div class="prod-em">'+item.em+'</div>'
+        +'<div class="prod-info"><div class="prod-name">'+item.name+'</div><div class="prod-meta">'+item.price+' · '+item.where+'</div></div>'
+        +'<div class="prod-arr">›</div>'
+        +'</div>';
+    }).join('');
+  });
+}
+function toggleShop(evt,cat,i){
+  evt.stopPropagation();
+  shopItems[cat][i].done=!shopItems[cat][i].done;
+  renderShop();
+}
+function addShop(cat){
+  var capCat=cat.charAt(0).toUpperCase()+cat.slice(1);
+  var input=document.getElementById('add'+capCat);
+  var v=input.value.trim();
+  if(!v) return;
+  shopItems[cat].push({em:'📌',name:v,jp:'',desc:'직접 추가한 아이템',price:'',where:'',tip:'',done:false});
+  input.value='';
+  renderShop();
+}
+function showProductModal(cat,i){
+  var item=shopItems[cat][i];
+  document.getElementById('modalEm').textContent=item.em;
+  document.getElementById('modalName').textContent=item.name;
+  document.getElementById('modalJp').textContent=item.jp;
+  document.getElementById('modalDesc').textContent=item.desc;
+  document.getElementById('modalPrice').textContent=item.price?'💴 '+item.price:'';
+  document.getElementById('modalWhere').textContent=item.where?'📍 '+item.where:'';
+  document.getElementById('modalTip').innerHTML=item.tip?'<strong>💡 팁</strong> '+item.tip:'';
+  document.getElementById('modalTip').style.display=item.tip?'block':'none';
+  var btn=document.getElementById('modalCheckBtn');
+  btn.textContent=item.done?'✓ 체크됨':'리스트 체크 ✓';
+  btn.className='modal-btn-check'+(item.done?' checked':'');
+  btn.onclick=function(){shopItems[cat][i].done=!shopItems[cat][i].done;renderShop();closeModal();};
+  document.getElementById('productModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('productModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ── PREP ── */
+function renderPrep(){
+  ['docs','elec','clothes','hygiene'].forEach(function(cat){
+    var el=document.getElementById('prepList-'+cat);
+    if(!el) return;
+    el.innerHTML=prepItems[cat].map(function(item,i){
+      return '<div class="prep-item'+(item.done?' done':'')+'" onclick="togglePrep(\''+cat+'\','+i+')">'
+        +'<div class="s-box">'+(item.done?'✓':'')+'</div>'+item.txt+'</div>';
+    }).join('');
+  });
+}
+function togglePrep(cat,i){prepItems[cat][i].done=!prepItems[cat][i].done;renderPrep();}
+
+/* ── INIT ── */
+window.addEventListener('load',function(){
+  map=L.map('map',{zoomControl:true,attributionControl:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
+
+  // 날짜 기반 메시지 (탭 선택과 완전 독립)
+  var now=new Date();
+  if(now < TRIP[0]){
+    // 7/9 이전: D-1 메시지 고정
+    isTripStarted=false;
+    applyMsg('-1');
+    setDay(0);
+  } else {
+    // 7/10~: 날짜에 맞는 메시지 자동 설정 + Day 탭도 자동 선택
+    isTripStarted=true;
+    var autoDay=2;
+    for(var i=0;i<TRIP.length;i++){if(now<TRIP[i]){autoDay=i-1;break;}}
+    autoDay=Math.max(0,Math.min(2,autoDay));
+    // 메시지는 날짜 기준으로만 결정 (Day2는 state.d2 따라감)
+    var autoMsgKey = autoDay===0 ? 0 : (autoDay===1 ? '1'+state.d2 : 2);
+    applyMsg(autoMsgKey);
+    setDay(autoDay);
+  }
+
+  renderFood();
+  renderShop();
+  renderPrep();
+  var d=document.createElement('div');d.className='bn-dot';
+  document.getElementById('bn-schedule').appendChild(d);
+  loadMap(state.day===0?0:(state.day===1?'1'+state.d2:2));
+});
+</script>
+
+<!-- ═══ 상품 상세 모달 ═══ -->
+<div class="modal-overlay" id="productModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <span class="modal-em-big" id="modalEm">🍫</span>
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-jp" id="modalJp"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-price-row">
+        <span class="modal-tag price" id="modalPrice"></span>
+        <span class="modal-tag where" id="modalWhere"></span>
+      </div>
+      <div class="modal-tip" id="modalTip"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-close" onclick="closeModal()">닫기</button>
+      <button class="modal-btn-check" id="modalCheckBtn">리스트 체크 ✓</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
