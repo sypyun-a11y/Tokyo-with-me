@@ -239,30 +239,6 @@ button,input{font-family:inherit;}
 .info-row b{color:var(--ink);font-weight:800;}
 .info-dot{width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:6px;}
 
-/* ── BUDGET ── */
-.bd-total{background:linear-gradient(135deg,#18181b,#3f3f46);border-radius:18px;padding:18px;color:#fff;margin-bottom:14px;}
-.bd-total-lbl{font-size:10.5px;font-weight:700;opacity:.6;letter-spacing:.4px;margin-bottom:5px;}
-.bd-total-yen{font-size:30px;font-weight:900;letter-spacing:-1px;}
-.bd-total-krw{font-size:12px;font-weight:700;opacity:.65;margin-top:3px;}
-.bd-split{display:flex;gap:8px;margin-top:14px;}
-.bd-split-c{flex:1;background:rgba(255,255,255,.12);border-radius:12px;padding:9px 11px;}
-.bd-split-l{font-size:9.5px;font-weight:700;opacity:.6;margin-bottom:3px;}
-.bd-split-v{font-size:14px;font-weight:900;}
-.bd-form{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.bd-form input{border:1.5px solid var(--border);border-radius:11px;padding:10px 12px;font-size:13px;background:var(--card);outline:none;color:var(--ink);}
-.bd-form input:focus{border-color:var(--red);}
-.bd-form .bd-what{flex:1;min-width:120px;}
-.bd-form .bd-yen{width:96px;}
-.bd-form select{border:1.5px solid var(--border);border-radius:11px;padding:10px 8px;font-size:12px;background:var(--card);color:var(--ink);font-family:inherit;outline:none;}
-.bd-form button{padding:10px 15px;background:var(--red);color:#fff;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;}
-.bd-row{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:13px;padding:11px 13px;margin-bottom:7px;}
-.bd-row-info{flex:1;min-width:0;}
-.bd-row-t{font-size:13px;font-weight:800;color:var(--ink);}
-.bd-row-s{font-size:10.5px;color:var(--muted);margin-top:2px;}
-.bd-row-y{font-size:14px;font-weight:900;color:var(--ink);white-space:nowrap;}
-.bd-del{border:none;background:none;color:var(--muted);font-size:17px;cursor:pointer;padding:0 2px;line-height:1;}
-.bd-rate{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:14px;}
-.bd-rate input{width:70px;border:1.5px solid var(--border);border-radius:9px;padding:6px 9px;font-size:12px;text-align:right;background:var(--card);outline:none;color:var(--ink);}
 .empty{text-align:center;padding:28px 14px;font-size:12px;color:var(--muted);font-weight:600;line-height:1.7;}
 
 /* ── PHRASE ── */
@@ -308,7 +284,6 @@ button,input{font-family:inherit;}
   .phrase-jp{font-size:18px;}
   .pm-jp{font-size:26px;}
   .bn-ic{font-size:16px;}
-  .bd-form .bd-what{min-width:100%;}
 }
 </style>
 </head>
@@ -373,8 +348,6 @@ button,input{font-family:inherit;}
   <div class="phrase-list" id="phraseList"></div>
 </div>
 
-<!-- ── 예산 ── -->
-<div class="tab-panel" id="budgetTab"></div>
 
 <!-- ── MODALS ── -->
 <div class="modal-overlay" id="prodModal" onclick="if(event.target===this)closeModal()">
@@ -921,7 +894,7 @@ var PHRASES = {
    9. 상태 + 동기화
    ══════════════════════════════════════════ */
 var LS_KEY = 'tokyo2026:'+SUPA.room;
-var state = {checks:{}, picks:{}, custom:{}, budget:[], rate:9.3, v:0};
+var state = {checks:{}, picks:{}, custom:{}, v:0};
 var supa=null, syncing=false;
 
 function loadLocal(){
@@ -1033,8 +1006,7 @@ var TABS = [
   {k:'cafe',     ic:'☕', l:'카페'},
   {k:'shop',     ic:'🛍️', l:'쇼핑'},
   {k:'prep',     ic:'🎒', l:'준비'},
-  {k:'phrase',   ic:'💬', l:'소통'},
-  {k:'budget',   ic:'💴', l:'예산'}
+  {k:'phrase',   ic:'💬', l:'소통'}
 ];
 
 function renderNav(){
@@ -1380,48 +1352,6 @@ function toast(){
   el.classList.add('show'); setTimeout(function(){ el.classList.remove('show'); },1400);
 }
 
-/* ── 예산 ── */
-function renderBudget(){
-  var rate = state.rate||9.3;
-  var total = state.budget.reduce(function(s,b){ return s+(+b.yen||0); },0);
-  var byMe = state.budget.filter(function(b){return b.who==='나';}).reduce(function(s,b){return s+(+b.yen||0);},0);
-  var byU  = total-byMe;
-  var h='<div class="sec-title">💴 예산</div>'
-    +'<div class="sec-sub">쓴 돈만 툭툭 넣어두면 돼. 둘이 같이 보여.</div>'
-    +'<div class="bd-total"><div class="bd-total-lbl">TOTAL</div>'
-    +'<div class="bd-total-yen">¥'+total.toLocaleString()+'</div>'
-    +'<div class="bd-total-krw">약 '+Math.round(total*rate).toLocaleString()+'원</div>'
-    +'<div class="bd-split"><div class="bd-split-c"><div class="bd-split-l">내가 낸 것</div><div class="bd-split-v">¥'+byMe.toLocaleString()+'</div></div>'
-    +'<div class="bd-split-c"><div class="bd-split-l">밍갱이 낸 것</div><div class="bd-split-v">¥'+byU.toLocaleString()+'</div></div></div></div>'
-    +'<div class="bd-rate">환율 100엔 = <input id="bdRate" type="number" step="0.1" value="'+(rate*100).toFixed(0)+'" onchange="setRate(this.value)"> 원</div>'
-    +'<div class="bd-form">'
-    +'<input class="bd-what" id="bdWhat" placeholder="어디에 썼어?">'
-    +'<input class="bd-yen" id="bdYen" type="number" inputmode="numeric" placeholder="엔">'
-    +'<select id="bdWho"><option>나</option><option>밍갱</option></select>'
-    +'<button onclick="addBudget()">추가</button></div>';
-  if(!state.budget.length){
-    h+='<div class="empty">아직 기록이 없어<br>도쿄 가서 하나씩 넣자 🇯🇵</div>';
-  } else {
-    h+=state.budget.map(function(b,i){
-      return '<div class="bd-row"><div class="bd-row-info"><div class="bd-row-t">'+b.what+'</div>'
-        +'<div class="bd-row-s">'+b.who+' · '+b.date+'</div></div>'
-        +'<div class="bd-row-y">¥'+(+b.yen).toLocaleString()+'</div>'
-        +'<button class="bd-del" onclick="delBudget('+i+')">✕</button></div>';
-    }).join('');
-  }
-  document.getElementById('budgetTab').innerHTML=h;
-}
-function addBudget(){
-  var w=document.getElementById('bdWhat').value.trim();
-  var y=parseInt(document.getElementById('bdYen').value,10);
-  if(!w||!y) return;
-  var d=new Date();
-  state.budget.push({what:w, yen:y, who:document.getElementById('bdWho').value, date:(d.getMonth()+1)+'/'+d.getDate()});
-  commit(); renderBudget();
-}
-function delBudget(i){ state.budget.splice(i,1); commit(); renderBudget(); }
-function setRate(v){ state.rate=(parseFloat(v)||930)/100; commit(); renderBudget(); }
-
 /* ══════════════════════════════════════════
    13. 지도
    ══════════════════════════════════════════ */
@@ -1456,7 +1386,7 @@ function initMap(){
    ══════════════════════════════════════════ */
 function renderAll(){
   renderDaySw(); renderSchedule(); renderFood(); renderCafes();
-  renderShop(); renderPrep(); renderBudget(); renderPhrases(curPcat); applyMsg();
+  renderShop(); renderPrep(); renderPhrases(curPcat); applyMsg();
 }
 function boot(){
   loadLocal();
