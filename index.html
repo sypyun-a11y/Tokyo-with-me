@@ -39,18 +39,35 @@ button,input{font-family:inherit;}
 .gate-btn{margin-top:14px;width:190px;padding:14px;border:none;border-radius:16px;background:var(--ink);color:#fff;font-size:14px;font-weight:800;cursor:pointer;}
 .gate-err{color:#fff;font-size:12px;font-weight:800;margin-top:12px;height:16px;}
 
-/* ── HERO ── */
-.hero{background:#fff;padding:18px 16px 16px;border-bottom:1px solid var(--border);text-align:center;}
-.hero-emoji{font-size:44px;line-height:1;margin-bottom:10px;display:block;}
-.hero-kv{display:inline-block;background:linear-gradient(135deg,var(--red),#ff6b8a);color:#fff;font-size:10px;font-weight:800;padding:4px 14px;border-radius:100px;margin-bottom:12px;letter-spacing:.4px;}
-.hero-msg-row{display:flex;align-items:center;gap:10px;border-radius:16px;padding:13px 15px;text-align:left;background:linear-gradient(135deg,#ff3b5c,#ff6b8a);transition:background .5s ease;}
-.hero-msg-em{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.hero-msg-day{font-size:9px;color:rgba(255,255,255,.6);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
-.hero-msg-main{font-size:13px;font-weight:700;color:#fff;line-height:1.55;}
-.sync-pill{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:10px;font-weight:800;padding:4px 11px;border-radius:100px;background:var(--bg);color:var(--muted);}
-.sync-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
-.sync-pill.live .dot{background:var(--green);}
+/* ── HERO (1단 압축) ── */
+.hero{background:#fff;padding:10px 14px 12px;border-bottom:1px solid var(--border);}
+.hero-bar{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.hero-mark{font-size:16px;line-height:1;}
+.hero-kv{font-size:11.5px;font-weight:900;color:var(--ink);letter-spacing:-.2px;}
+.hero-kv em{font-style:normal;color:var(--red);}
+.hero-spacer{flex:1;}
+.sync-pill{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;padding:3px 9px;border-radius:100px;background:var(--bg);color:var(--muted);}
+.sync-pill .dot{width:5px;height:5px;border-radius:50%;background:var(--muted);}
 .sync-pill.live{background:var(--green2);color:var(--green);}
+.sync-pill.live .dot{background:var(--green);}
+.hero-msg-row{display:flex;align-items:center;gap:10px;border-radius:14px;padding:11px 13px;background:linear-gradient(135deg,#ff3b5c,#ff6b8a);transition:background .5s ease;}
+.hero-msg-em{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hero-msg-body{min-width:0;}
+.hero-msg-day{font-size:8.5px;color:rgba(255,255,255,.62);font-weight:800;letter-spacing:.5px;margin-bottom:2px;}
+.hero-msg-main{font-size:12.5px;font-weight:700;color:#fff;line-height:1.5;}
+
+/* ── NOW 배너 (시그니처) ── */
+.nowbar{margin:12px 14px 0;border-radius:16px;background:var(--ink);color:#fff;padding:13px 15px;display:flex;align-items:center;gap:13px;}
+.nowbar.pre{background:linear-gradient(135deg,#18181b,#3f3f46);}
+.now-clock{flex-shrink:0;text-align:center;line-height:1;}
+.now-clock .hh{font-size:26px;font-weight:900;letter-spacing:-1.2px;font-variant-numeric:tabular-nums;}
+.now-clock .tag{font-size:8.5px;font-weight:900;letter-spacing:1.2px;color:rgba(255,255,255,.5);margin-top:4px;}
+.now-div{width:1px;align-self:stretch;background:rgba(255,255,255,.16);flex-shrink:0;}
+.now-body{flex:1;min-width:0;}
+.now-t{font-size:14px;font-weight:900;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.now-s{font-size:11px;color:rgba(255,255,255,.62);font-weight:600;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.now-go{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;}
+.now-dd{font-size:30px;font-weight:900;letter-spacing:-1.6px;font-variant-numeric:tabular-nums;}
 
 /* ── DAY SWITCHER ── */
 .day-sw{display:flex;gap:6px;padding:12px 14px 0;background:var(--bg);}
@@ -60,9 +77,14 @@ button,input{font-family:inherit;}
 .ds.on small{opacity:.85;}
 
 /* ── MAP ── */
-#mapWrap{display:block;padding:12px 14px 0;}
-#map{height:210px;width:100%;border-radius:16px;border:1.5px solid var(--border);}
-.map-hint{font-size:10px;color:var(--muted);font-weight:600;text-align:center;padding:6px 0 0;}
+#mapWrap{display:block;padding:12px 14px 0;position:relative;}
+#map{height:260px;width:100%;border-radius:16px;border:1.5px solid var(--border);background:#eef0f4;}
+.map-exp{position:absolute;right:22px;top:20px;z-index:400;width:34px;height:34px;border-radius:11px;border:none;background:rgba(255,255,255,.94);box-shadow:0 2px 10px rgba(0,0,0,.16);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.map-hint{font-size:10px;color:var(--muted);font-weight:600;text-align:center;padding:7px 0 0;}
+#mapWrap.full{position:fixed;inset:0;z-index:1200;padding:0;background:#fff;}
+#mapWrap.full #map{height:100%;border-radius:0;border:none;}
+#mapWrap.full .map-hint{display:none;}
+#mapWrap.full .map-exp{right:14px;top:max(14px, env(safe-area-inset-top));width:40px;height:40px;font-size:17px;}
 
 /* ── CONTENT ── */
 .tab-panel{display:none;padding:14px 14px calc(var(--nav-h) + 20px);}
@@ -117,17 +139,21 @@ button,input{font-family:inherit;}
 .meal-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .meal-hd-label{font-size:14px;font-weight:800;color:var(--ink);}
 .meal-hd-line{flex:1;height:1.5px;background:var(--border);border-radius:1px;}
-.food-opt{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
-.food-opt.sel{border-color:var(--red);background:#fffcfc;}
-.fo-em{font-size:26px;line-height:1;flex-shrink:0;margin-top:2px;}
+.food-opt{position:relative;display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:13px 14px;margin-bottom:9px;cursor:pointer;transition:border-color .15s, box-shadow .15s;overflow:hidden;}
+.food-opt.sel{border-color:var(--red);box-shadow:0 4px 18px rgba(255,59,92,.13);}
+.food-opt.sel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--red),#ff9500);}
+.fo-em{width:46px;height:46px;border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:24px;line-height:1;flex-shrink:0;transition:background .15s;}
+.food-opt.sel .fo-em{background:var(--red2);}
 .fo-info{flex:1;min-width:0;}
-.fo-name{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:2px;}
-.fo-desc{font-size:11.5px;color:var(--muted);line-height:1.55;margin-bottom:5px;}
-.fo-meta{font-size:10px;font-weight:700;color:var(--muted);}
-.fo-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
-.fo-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;transition:all .15s;}
-.food-opt.sel .fo-check{background:var(--red);border-color:var(--red);}
-.fo-map{font-size:10px;font-weight:700;color:var(--ink);background:var(--bg);padding:4px 10px;border-radius:100px;text-decoration:none;white-space:nowrap;}
+.fo-name{font-size:13.5px;font-weight:900;color:var(--ink);letter-spacing:-.2px;margin-bottom:3px;}
+.fo-jp{font-size:10px;color:var(--muted);font-weight:400;margin-left:4px;letter-spacing:0;}
+.fo-desc{font-size:11.5px;color:var(--muted);line-height:1.6;margin-bottom:7px;}
+.fo-meta{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+.fo-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex-shrink:0;}
+.fo-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:transparent;transition:all .15s;}
+.food-opt.sel .fo-check{background:var(--red);border-color:var(--red);color:#fff;}
+.fo-map{font-size:10px;font-weight:800;color:var(--ink);background:var(--bg);padding:5px 10px;border-radius:100px;text-decoration:none;white-space:nowrap;}
+.fo-pick{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:900;color:var(--red);background:var(--red2);padding:3px 9px;border-radius:100px;}
 
 /* ── CAFE TAB ── */
 .geo-bar{display:flex;gap:8px;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:11px 13px;margin-bottom:14px;}
@@ -279,8 +305,16 @@ button,input{font-family:inherit;}
 .bn-lbl{font-size:8.5px;font-weight:800;color:var(--muted);}
 .bn.on .bn-lbl{color:var(--red);}
 
+/* ── 품질 기준선 ── */
+:focus-visible{outline:2.5px solid var(--red);outline-offset:2px;border-radius:6px;}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+}
+
 @media(max-width:480px){
-  #map{height:180px;}
+  #map{height:220px;}
+  .now-clock .hh{font-size:23px;}
+  .now-dd{font-size:27px;}
   .phrase-jp{font-size:18px;}
   .pm-jp{font-size:26px;}
   .bn-ic{font-size:16px;}
@@ -300,20 +334,28 @@ button,input{font-family:inherit;}
 </div>
 
 <header class="hero">
-  <span class="hero-emoji">🐰🐿️</span>
-  <div class="hero-kv" id="heroKv">✈️ 2026년 9월 12–15 · 3박 4일</div>
+  <div class="hero-bar">
+    <span class="hero-mark">🐰🐿️</span>
+    <span class="hero-kv" id="heroKv">2026.09.12–15 · 3박 4일</span>
+    <span class="hero-spacer"></span>
+    <span class="sync-pill" id="syncPill"><span class="dot"></span><span id="syncTxt">이 기기에 저장 중</span></span>
+  </div>
   <div class="hero-msg-row" id="heroMsg">
     <div class="hero-msg-em" id="msgAv">💌</div>
-    <div>
+    <div class="hero-msg-body">
       <div class="hero-msg-day" id="msgLbl">오늘의 메시지</div>
       <div class="hero-msg-main" id="msgTxt">도쿄 가자 🇯🇵</div>
     </div>
   </div>
-  <div class="sync-pill" id="syncPill"><span class="dot"></span><span id="syncTxt">이 기기에만 저장 중</span></div>
 </header>
 
+<div class="nowbar" id="nowbar"></div>
 <div class="day-sw" id="daySw"></div>
-<div id="mapWrap"><div id="map"></div><div class="map-hint">핀을 누르면 장소 이름이 나와 · 좌표는 대략 위치야</div></div>
+<div id="mapWrap">
+  <button class="map-exp" id="mapExp" onclick="toggleMapFull()" aria-label="지도 크게 보기">⛶</button>
+  <div id="map"></div>
+  <div class="map-hint">핀을 누르면 장소 이름이 나와 · 좌표는 대략 위치야</div>
+</div>
 
 <!-- ── 일정 ── -->
 <div class="tab-panel on" id="scheduleTab"></div>
@@ -1021,7 +1063,9 @@ function switchTab(k){
     var el=document.getElementById(t.k+'Tab');
     if(el) el.classList.toggle('on', t.k===k);
   });
-  document.getElementById('daySw').style.display = (k==='schedule'||k==='food') ? 'flex' : 'none';
+  var onDayTab = (k==='schedule'||k==='food');
+  document.getElementById('daySw').style.display = onDayTab ? 'flex' : 'none';
+  document.getElementById('nowbar').style.display = onDayTab ? 'flex' : 'none';
   document.getElementById('mapWrap').style.display = (k==='schedule') ? 'block' : 'none';
   renderNav();
   window.scrollTo(0,0);
@@ -1050,14 +1094,61 @@ function applyMsg(){
   var dd=daysUntilTrip();
   if(ti>=0){
     document.getElementById('msgLbl').textContent = DAYS[ti].label+' · 오늘';
-    document.getElementById('heroKv').textContent = '🇯🇵 여행 '+DAYS[ti].label+' 진행 중';
+    document.getElementById('heroKv').innerHTML = '<em>'+DAYS[ti].label+'</em> · '+DAYS[ti].theme;
   } else if(dd>0){
     document.getElementById('msgLbl').textContent = 'D-'+dd;
-    document.getElementById('heroKv').textContent = '✈️ 2026년 9월 12–15 · D-'+dd;
+    document.getElementById('heroKv').innerHTML = '2026.09.12–15 · <em>D-'+dd+'</em>';
   } else {
     document.getElementById('msgLbl').textContent = d.label;
-    document.getElementById('heroKv').textContent = '✈️ 2026년 9월 12–15 · 3박 4일';
+    document.getElementById('heroKv').textContent = '2026.09.12–15 · 3박 4일';
   }
+  renderNow();
+}
+
+/* ── NOW 배너: 여행 중이면 지금/다음, 아니면 D-day ── */
+function renderNow(){
+  var el=document.getElementById('nowbar');
+  var ti=dayIndexForToday();
+  if(ti<0){
+    var dd=daysUntilTrip();
+    if(dd>0){
+      el.className='nowbar pre';
+      el.innerHTML='<div class="now-clock"><div class="now-dd">'+dd+'</div><div class="tag">DAYS LEFT</div></div>'
+        +'<div class="now-div"></div>'
+        +'<div class="now-body"><div class="now-t">도쿄까지 '+dd+'일</div>'
+        +'<div class="now-s">준비 탭에서 챙길 것 확인하기</div></div>'
+        +'<button class="now-go" onclick="switchTab(\'prep\')" aria-label="준비물 보기">🎒</button>';
+    } else {
+      el.className='nowbar pre';
+      el.innerHTML='<div class="now-clock"><div class="now-dd">🐰</div></div><div class="now-div"></div>'
+        +'<div class="now-body"><div class="now-t">다녀왔습니다</div>'
+        +'<div class="now-s">다음엔 어디 갈까?</div></div>';
+    }
+    return;
+  }
+  var slots=DAYS[ti].slots, nm=nowMin(), cur=null, nxt=null;
+  for(var i=0;i<slots.length;i++){
+    if(toMin(slots[i].t)<=nm) cur=slots[i];
+    else { nxt=slots[i]; break; }
+  }
+  var s = cur||slots[0];
+  el.className='nowbar';
+  el.innerHTML='<div class="now-clock"><div class="hh">'+s.t+'</div><div class="tag">'+(cur?'NOW':'SOON')+'</div></div>'
+    +'<div class="now-div"></div>'
+    +'<div class="now-body"><div class="now-t">'+s.name+'</div>'
+    +'<div class="now-s">'+(nxt?'다음 '+nxt.t+' '+nxt.name:'오늘 일정 끝 · 수고했어')+'</div></div>'
+    +'<a class="now-go" href="'+dirUrl(s.p)+'" target="_blank" rel="noopener" aria-label="길 안내">🧭</a>';
+}
+
+/* ── 지도 전체화면 ── */
+var mapFull=false;
+function toggleMapFull(){
+  mapFull=!mapFull;
+  var w=document.getElementById('mapWrap');
+  w.classList.toggle('full',mapFull);
+  document.getElementById('mapExp').textContent = mapFull?'✕':'⛶';
+  document.body.style.overflow = mapFull?'hidden':'';
+  setTimeout(function(){ if(map){ map.invalidateSize(); loadMap(); } },220);
 }
 
 /* ── 일정 ── */
@@ -1138,19 +1229,24 @@ function renderFood(){
   var f = FOOD[date]||{};
   var d = DAYS[curDay];
   var h = '<div class="sec-title">🍜 '+d.label+' 맛집</div>'
-        + '<div class="sec-sub">고르면 일정에 반영되는 건 아니고, 둘이 뭘 먹을지 정하는 용도야. 체크는 서로 보여.</div>';
+        + '<div class="sec-sub">골라두면 카드가 표시돼. 둘이 뭘 먹을지 미리 맞춰보는 용도야.</div>';
   var any=false;
   ['brunch','lunch','dinner'].forEach(function(meal){
     if(!f[meal]) return;
     any=true;
-    h += '<div class="meal-section"><div class="meal-hd"><span class="meal-hd-label">'+MEAL_LABEL[meal]+'</span><span class="meal-hd-line"></span></div>';
+    var pk = date+':'+meal;
+    var picked = state.picks[pk];
+    h += '<div class="meal-section"><div class="meal-hd"><span class="meal-hd-label">'+MEAL_LABEL[meal]+'</span>'
+      + '<span class="meal-hd-line"></span>'
+      + (picked!==undefined?'<span class="fo-pick">✓ '+f[meal][picked].n+'</span>':'')
+      + '</div>';
     f[meal].forEach(function(o,i){
-      var pk = date+':'+meal;
-      var sel = state.picks[pk]===i;
+      var sel = picked===i;
+      var chips = String(o.m).split('·').map(function(x){ return '<span class="chip">'+x.trim()+'</span>'; }).join('');
       h += '<div class="food-opt'+(sel?' sel':'')+'" onclick="pickFood(\''+pk+'\','+i+')">'
         + '<span class="fo-em">'+o.em+'</span>'
-        + '<div class="fo-info"><div class="fo-name">'+o.n+'</div>'
-        + '<div class="fo-desc">'+o.d+'</div><div class="fo-meta">'+o.m+'</div></div>'
+        + '<div class="fo-info"><div class="fo-name">'+o.n+'<span class="fo-jp">'+(o.jp||'')+'</span></div>'
+        + '<div class="fo-desc">'+o.d+'</div><div class="fo-meta">'+chips+'</div></div>'
         + '<div class="fo-right"><div class="fo-check">✓</div>'
         + '<a class="fo-map" href="'+dirUrl(o.pk)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍</a>'
         + '</div></div>';
@@ -1397,6 +1493,15 @@ function boot(){
   switchTab('schedule');
   initMap();
   initSync();
+  /* 여행 중이면 1분마다 '지금' 갱신 */
+  setInterval(function(){
+    if(dayIndexForToday()>=0){ renderNow(); if(curTab==='schedule') renderSchedule(); }
+  }, 60000);
+  document.addEventListener('keydown', function(e){
+    if(e.key!=='Escape') return;
+    if(mapFull) toggleMapFull();
+    else { closeModal(); closePhraseModal(); }
+  });
 }
 try{
   if(localStorage.getItem(LS_KEY+':ok')==='1'){
