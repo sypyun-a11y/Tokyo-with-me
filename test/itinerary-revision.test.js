@@ -33,7 +33,6 @@ function loadTripData() {
   global.setInterval = () => {};
   global.L = {};
 
-  // The app exposes its source-of-truth data through global `var` declarations.
   eval(match[1]);
   return { DAYS, FOOD, CAFES, P, PREP };
 }
@@ -42,6 +41,14 @@ function dayPlaces(day) {
   return day.slots.map((slot) => slot.p);
 }
 
+test('hotel pin uses the booked CANDEO Shimbashi address at 新橋 3-6-8', () => {
+  const { P } = loadTripData();
+
+  assert.equal(P.hotel.n, '칸데오 호텔즈 도쿄 신바시');
+  assert.ok(Math.abs(P.hotel.lat - 35.66584) < 0.0001, 'hotel latitude must match 新橋 3-6-8');
+  assert.ok(Math.abs(P.hotel.lng - 139.75514) < 0.0001, 'hotel longitude must match 新橋 3-6-8');
+});
+
 test('Day 1 starts at Seodaemun Intersection on Airport Limousine 6002, not a generic Gwanghwamun coordinate', () => {
   const { DAYS, P } = loadTripData();
   const slots = DAYS[0].slots;
@@ -49,7 +56,8 @@ test('Day 1 starts at Seodaemun Intersection on Airport Limousine 6002, not a ge
 
   assert.ok(stop, 'Seodaemun bus stop must be a defined place');
   assert.equal(stop.n, '서대문역사거리 (신라스테이)');
-  assert.ok(Math.abs(stop.lat - 37.5657) < 0.002, 'stop must be at Seodaemun, not Gwanghwamun');
+  assert.match(stop.q, /Seodaemun Station Intersection/);
+  assert.equal(stop.lat, undefined, 'no guessed coordinate for a two-direction bus stop');
   assert.ok(slots.some((slot) => slot.p === 'seodaemunBus' && /6002/.test(slot.name)));
   assert.ok(!slots.some((slot) => slot.p === 'home'));
 });
@@ -108,6 +116,19 @@ test('Day 4 declares a FLEX Day and protects the 15:00 Shimbashi airport departu
   assert.match(day.theme, /FLEX/i);
   assert.ok(day.slots.some((slot) => slot.t === '15:00' && slot.p === 'hotel'));
   assert.ok(day.slots.some((slot) => slot.p === 'granstaTokyo'));
+});
+
+test('Day 1 and Day 3 food candidates include the user-selected Ginza and Shibuya katsu shops', () => {
+  const { FOOD, P } = loadTripData();
+  const day1 = JSON.stringify(FOOD['2026-09-12']);
+  const day3 = JSON.stringify(FOOD['2026-09-14']);
+
+  assert.match(day1, /이마카츠 긴자점/);
+  assert.match(day3, /카츠동야 즈이초/);
+  assert.match(day3, /신주쿠 사카에즈시 서쪽출구점/);
+  assert.equal(P.imakatsuGinza.a, '〒104-0061 東京都中央区銀座4-13-18');
+  assert.equal(P.zuichoShibuya.a, '〒150-0042 東京都渋谷区宇田川町41-26');
+  assert.equal(P.sakaeZushiNishiguchi.a, '〒160-0023 東京都新宿区西新宿1-18-16');
 });
 
 test('food and cafe candidates remove Ginza Happo and include the newly curated places', () => {

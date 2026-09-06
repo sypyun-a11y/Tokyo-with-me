@@ -361,7 +361,7 @@ button,input{font-family:inherit;}
 <div id="mapWrap">
   <button class="map-exp" id="mapExp" onclick="toggleMapFull()" aria-label="지도 크게 보기">⛶</button>
   <div id="map"></div>
-  <div class="map-hint">핀을 누르면 장소 이름이 나와 · 좌표는 대략 위치야</div>
+  <div class="map-hint">핀은 검증 완료 좌표만 표시해 · 모든 카드의 📍은 정식 주소로 구글맵을 열어</div>
 </div>
 
 <!-- ── 일정 ── -->
@@ -463,51 +463,259 @@ var TRIP_DATES = ['2026-09-12','2026-09-13','2026-09-14','2026-09-15'];
    1. 장소 (모든 화면이 여기서 나옴)
    ══════════════════════════════════════════ */
 var P = {
-  home:      {n:'서울 종로구', jp:'', lat:37.5729, lng:126.9794},
-  seodaemunBus:{n:'서대문역사거리 (신라스테이)', jp:'西大門駅交差点', lat:37.5657, lng:126.9668},
-  icn:       {n:'인천공항 제1터미널', jp:'ICN T1', lat:37.4491, lng:126.4506},
-  nrt:       {n:'나리타공항', jp:'成田空港', lat:35.7647, lng:140.3864},
-  hotel:     {n:'칸데오 호텔즈 도쿄 신바시', jp:'カンデオホテルズ東京新橋', lat:35.6656, lng:139.7570},
-  ginza:     {n:'긴자', jp:'銀座', lat:35.6717, lng:139.7650},
-  kanadeLounge:{n:'카나데 라운지', jp:'KANADE LOUNGE', lat:35.6340, lng:139.7162},
-  moriMuseum:{n:'론 뮤엑 · 모리미술관', jp:'森美術館', lat:35.6605, lng:139.7292},
-  ginzaWest:{n:'긴자 웨스트 본점', jp:'銀座ウエスト 本店', lat:35.6703, lng:139.7631},
-  gonpachiNishiazabu:{n:'곤파치 니시아자부', jp:'権八 西麻布', lat:35.6598, lng:139.7247},
-  sensoji:   {n:'센소지', jp:'浅草寺', lat:35.7148, lng:139.7967},
-  nakamise:  {n:'나카미세 상점가', jp:'仲見世通り', lat:35.7128, lng:139.7962},
-  asakusa:   {n:'아사쿠사', jp:'浅草', lat:35.7111, lng:139.7975},
-  asakusaAlley:{n:'아사쿠사 골목 · 호피 거리', jp:'ホッピー通り', lat:35.7130, lng:139.7946},
-  tokyosta:  {n:'도쿄역', jp:'東京駅', lat:35.6812, lng:139.7671},
-  granstaTokyo:{n:'Gransta Tokyo', jp:'グランスタ東京', lat:35.6812, lng:139.7671},
-  sea:       {n:'도쿄 디즈니씨', jp:'東京ディズニーシー', lat:35.6267, lng:139.8850},
-  f45:       {n:'F45 Training 하마마츠초', jp:'F45 浜松町', lat:35.6570, lng:139.7548},
-  shibaPark: {n:'시바공원', jp:'芝公園', lat:35.6546, lng:139.7484},
-  stussyHarajuku:{n:'Stüssy Harajuku', jp:'STÜSSY HARAJUKU', lat:35.6717, lng:139.7044},
-  kitsuneAoyama:{n:'Maison Kitsuné Aoyama', jp:'メゾン キツネ 青山', lat:35.6648, lng:139.7135},
-  barbourCatStreet:{n:'Barbour Harajuku Cat Street', jp:'バブアー 原宿キャットストリート', lat:35.6657, lng:139.7048},
-  omote:     {n:'오모테산도', jp:'表参道', lat:35.6652, lng:139.7124},
-  catst:     {n:'캣스트리트', jp:'キャットストリート', lat:35.6675, lng:139.7075},
-  shibuya:   {n:'시부야 스크램블', jp:'渋谷スクランブル', lat:35.6595, lng:139.7005},
-  sky:       {n:'시부야 스카이', jp:'SHIBUYA SKY', lat:35.6580, lng:139.7024},
-  tableauxLounge:{n:'타블로스 라운지', jp:'タブローズラウンジ', lat:35.6480, lng:139.7011},
-  shinjuku:  {n:'신주쿠', jp:'新宿', lat:35.6896, lng:139.7006},
-  tenryu:    {n:'긴자 텐류', jp:'銀座天龍', lat:35.6714, lng:139.7652},
-  oborozuki: {n:'긴자 오보로즈키', jp:'銀座 朧月', lat:35.6699, lng:139.7644},
-  kyosushi:  {n:'쿄스시', jp:'京すし', lat:35.6717, lng:139.7650},
-  torafuku:  {n:'토라후쿠 아오야마 본점', jp:'寅福 青山本店', lat:35.6630, lng:139.7105},
-  saimon:    {n:'야키니쿠 사이몬', jp:'焼肉 さいもん', lat:35.6440, lng:139.6988},
-  kikanbo:   {n:'키칸보', jp:'鬼金棒', lat:35.6951, lng:139.7705},
-  kameya:    {n:'카메야 신주쿠점', jp:'かめや 新宿店', lat:35.6928, lng:139.7000}
+  "seodaemunBus": {
+    "n": "서대문역사거리 (신라스테이)",
+    "jp": "西大門駅交差点",
+    "a": "서울특별시 서대문구 충정로 76 (정류장 01006)",
+    "q": "Seodaemun Station Intersection Shilla Stay Seodaemun 서울특별시 서대문구 충정로 76"
+  },
+  "icn": {
+    "n": "인천국제공항 제1여객터미널",
+    "jp": "Incheon International Airport Terminal 1",
+    "a": "인천광역시 중구 공항로 272",
+    "q": "Incheon International Airport Terminal 1 인천광역시 중구 공항로 272",
+    "lat": 37.45319,
+    "lng": 126.45102
+  },
+  "nrt": {
+    "n": "나리타공항 제1터미널",
+    "jp": "成田国際空港 第1ターミナル",
+    "a": "〒282-0004 千葉県成田市古込1-1",
+    "q": "Narita International Airport Terminal 1 千葉県成田市古込1-1",
+    "lat": 35.76309,
+    "lng": 140.38641
+  },
+  "hotel": {
+    "n": "칸데오 호텔즈 도쿄 신바시",
+    "jp": "CANDEO HOTELS 東京新橋",
+    "a": "〒105-0004 東京都港区新橋3-6-8",
+    "q": "CANDEO HOTELS 東京新橋 東京都港区新橋3-6-8",
+    "lat": 35.66584,
+    "lng": 139.75514
+  },
+  "ginza": {
+    "n": "긴자 4초메 교차로",
+    "jp": "銀座四丁目交差点",
+    "a": "〒104-0061 東京都中央区銀座4-6-16",
+    "q": "銀座四丁目交差点 東京都中央区銀座4-6-16"
+  },
+  "kanadeLounge": {
+    "n": "카나데 라운지",
+    "jp": "KANADE LOUNGE",
+    "a": "〒153-0064 東京都目黒区下目黒1-8-1 Gajoen Tokyo内",
+    "q": "KANADE LOUNGE Gajoen Tokyo 東京都目黒区下目黒1-8-1"
+  },
+  "moriMuseum": {
+    "n": "론 뮤엑 · 모리미술관",
+    "jp": "森美術館",
+    "a": "〒106-6150 東京都港区六本木6-10-1 六本木ヒルズ森タワー 52F・53F",
+    "q": "森美術館 東京都港区六本木6-10-1 六本木ヒルズ森タワー",
+    "lat": 35.6605056,
+    "lng": 139.7290667
+  },
+  "ginzaWest": {
+    "n": "긴자 웨스트 본점",
+    "jp": "銀座ウエスト 銀座本店",
+    "a": "〒104-0061 東京都中央区銀座7-3-6",
+    "q": "銀座ウエスト 銀座本店 東京都中央区銀座7-3-6",
+    "lat": 35.67044,
+    "lng": 139.7607377
+  },
+  "gonpachiNishiazabu": {
+    "n": "곤파치 니시아자부",
+    "jp": "権八 西麻布",
+    "a": "〒106-0031 東京都港区西麻布1-13-11 1F・2F",
+    "q": "権八 西麻布 東京都港区西麻布1-13-11"
+  },
+  "sea": {
+    "n": "도쿄 디즈니씨",
+    "jp": "東京ディズニーシー",
+    "a": "〒279-8511 千葉県浦安市舞浜1-1",
+    "q": "東京ディズニーシー 千葉県浦安市舞浜1-1",
+    "lat": 35.62678,
+    "lng": 139.88801
+  },
+  "sensoji": {
+    "n": "센소지",
+    "jp": "浅草寺",
+    "a": "〒111-0032 東京都台東区浅草2-3-1",
+    "q": "浅草寺 東京都台東区浅草2-3-1"
+  },
+  "nakamise": {
+    "n": "나카미세도리",
+    "jp": "仲見世通り",
+    "a": "〒111-0032 東京都台東区浅草1-1-36-3",
+    "q": "仲見世通り 東京都台東区浅草1-1-36-3",
+    "lat": 35.712482,
+    "lng": 139.796706
+  },
+  "asakusa": {
+    "n": "아사쿠사",
+    "jp": "浅草",
+    "a": "〒111-0032 東京都台東区浅草2-3-1",
+    "q": "浅草寺 東京都台東区浅草2-3-1"
+  },
+  "asakusaAlley": {
+    "n": "아사쿠사 골목 · 호피 거리",
+    "jp": "ホッピー通り",
+    "a": "〒111-0032 東京都台東区浅草2-5 일대",
+    "q": "ホッピー通り 東京都台東区浅草2-5",
+    "lat": 35.713602,
+    "lng": 139.79424
+  },
+  "tokyosta": {
+    "n": "도쿄역",
+    "jp": "JR東京駅",
+    "a": "〒100-0005 東京都千代田区丸の内1-9-1",
+    "q": "JR東京駅 東京都千代田区丸の内1-9-1"
+  },
+  "granstaTokyo": {
+    "n": "Gransta Tokyo",
+    "jp": "グランスタ東京",
+    "a": "〒100-0005 東京都千代田区丸の内1-9-1 JR東京駅改札内 B1F・1F",
+    "q": "グランスタ東京 東京都千代田区丸の内1-9-1 JR東京駅",
+    "lat": 35.681334,
+    "lng": 139.766917
+  },
+  "f45": {
+    "n": "F45 Training 하마마츠초",
+    "jp": "F45 TRAINING HAMAMATSUCHO",
+    "a": "〒105-0012 東京都港区芝大門1-16-3 芝大門116ビル 1F・B1F",
+    "q": "F45 TRAINING HAMAMATSUCHO 東京都港区芝大門1-16-3",
+    "lat": 35.657219,
+    "lng": 139.754471
+  },
+  "shibaPark": {
+    "n": "시바공원",
+    "jp": "芝公園",
+    "a": "〒105-0011 東京都港区芝公園4-10-17",
+    "q": "芝公園 東京都港区芝公園4-10-17"
+  },
+  "stussyHarajuku": {
+    "n": "Stüssy Harajuku",
+    "jp": "Stüssy Harajuku",
+    "a": "〒150-0001 東京都渋谷区神宮前4-28-2",
+    "q": "Stüssy Harajuku 東京都渋谷区神宮前4-28-2"
+  },
+  "kitsuneAoyama": {
+    "n": "Maison Kitsuné Aoyama",
+    "jp": "メゾン キツネ 青山",
+    "a": "〒107-0062 東京都港区南青山3-15-13",
+    "q": "Maison Kitsuné Aoyama 東京都港区南青山3-15-13"
+  },
+  "barbourCatStreet": {
+    "n": "Barbour Harajuku Cat Street",
+    "jp": "バブアー 原宿キャットストリート店",
+    "a": "〒150-0001 東京都渋谷区神宮前6-16-12 神宮前グリーンテラス",
+    "q": "バブアー 原宿キャットストリート店 東京都渋谷区神宮前6-16-12",
+    "lat": 35.665,
+    "lng": 139.703376
+  },
+  "omote": {
+    "n": "오모테산도",
+    "jp": "表参道",
+    "a": "〒107-0062 東京都港区南青山3-6-12",
+    "q": "表参道駅 東京都港区南青山3-6-12"
+  },
+  "shibuya": {
+    "n": "시부야 스크램블",
+    "jp": "渋谷スクランブル交差点",
+    "a": "〒150-0043 東京都渋谷区道玄坂2-1",
+    "q": "渋谷スクランブル交差点 東京都渋谷区道玄坂2-1"
+  },
+  "sky": {
+    "n": "시부야 스카이",
+    "jp": "SHIBUYA SKY",
+    "a": "〒150-0002 東京都渋谷区渋谷2-24-12 渋谷スクランブルスクエア",
+    "q": "SHIBUYA SKY 東京都渋谷区渋谷2-24-12"
+  },
+  "tableauxLounge": {
+    "n": "타블로스 라운지",
+    "jp": "TABLEAUX LOUNGE",
+    "a": "〒150-0033 東京都渋谷区猿楽町11-6 サンローゼ代官山 B1F",
+    "q": "TABLEAUX LOUNGE 東京都渋谷区猿楽町11-6",
+    "lat": 35.649436,
+    "lng": 139.701975
+  },
+  "shinjuku": {
+    "n": "신주쿠역",
+    "jp": "新宿駅",
+    "a": "〒160-0022 東京都新宿区新宿3-38-1",
+    "q": "新宿駅 東京都新宿区新宿3-38-1"
+  },
+  "tenryu": {
+    "n": "긴자 텐류 본점",
+    "jp": "銀座 天龍 本店",
+    "a": "〒104-0061 東京都中央区銀座2-5-19 PUZZLE GINZA 4F",
+    "q": "銀座 天龍 本店 東京都中央区銀座2-5-19",
+    "lat": 35.674158,
+    "lng": 139.766957
+  },
+  "oborozuki": {
+    "n": "긴자 오보로즈키",
+    "jp": "銀座 朧月",
+    "a": "〒104-0061 東京都中央区銀座6-4-13 浅黄ビル1F",
+    "q": "銀座 朧月 東京都中央区銀座6-4-13"
+  },
+  "torafuku": {
+    "n": "토라후쿠 아오야마 본점",
+    "jp": "寅福 青山本店",
+    "a": "〒107-0061 東京都港区北青山3-12-9 花茂ビル B1F",
+    "q": "寅福 青山本店 東京都港区北青山3-12-9",
+    "lat": 35.663274,
+    "lng": 139.710199
+  },
+  "kameya": {
+    "n": "카메야 신주쿠점",
+    "jp": "そば処かめや 新宿店",
+    "a": "〒160-0023 東京都新宿区西新宿1-2-10",
+    "q": "そば処かめや 新宿店 東京都新宿区西新宿1-2-10",
+    "lat": 35.693073,
+    "lng": 139.699456
+  },
+  "saimon": {
+    "n": "야키니쿠 사이몬",
+    "jp": "焼肉さいもん",
+    "a": "〒153-0061 東京都目黒区中目黒1-10-24 SYLA中目黒 2F",
+    "q": "焼肉さいもん 東京都目黒区中目黒1-10-24",
+    "lat": 35.643337,
+    "lng": 139.701185
+  },
+  "kikanbo": {
+    "n": "키칸보 간다 본점",
+    "jp": "カラシビ味噌らー麺 鬼金棒 神田本店",
+    "a": "〒101-0044 東京都千代田区鍛冶町2-10-9",
+    "q": "鬼金棒 神田本店 東京都千代田区鍛冶町2-10-9",
+    "lat": 35.693689,
+    "lng": 139.772377
+  },
+  "imakatsuGinza": {
+    "n": "이마카츠 긴자점",
+    "jp": "今勝 銀座店",
+    "a": "〒104-0061 東京都中央区銀座4-13-18",
+    "q": "今勝 銀座店 東京都中央区銀座4-13-18"
+  },
+  "zuichoShibuya": {
+    "n": "카츠동야 즈이초",
+    "jp": "かつ丼屋 瑞兆",
+    "a": "〒150-0042 東京都渋谷区宇田川町41-26",
+    "q": "かつ丼屋 瑞兆 東京都渋谷区宇田川町41-26"
+  },
+  "sakaeZushiNishiguchi": {
+    "n": "신주쿠 사카에즈시 서쪽출구점",
+    "jp": "栄寿司 西口店",
+    "a": "〒160-0023 東京都新宿区西新宿1-18-16",
+    "q": "栄寿司 西口店 東京都新宿区西新宿1-18-16"
+  }
 };
 
 function mapUrl(k){
-  var p=P[k]; if(!p) return '#';
-  var q=encodeURIComponent((p.jp||p.n));
-  return 'https://www.google.com/maps/search/?api=1&query='+p.lat+','+p.lng+'&query_place_id=&hl=ko#'+q;
+  var p=P[k]; if(!p || !p.q) return '#';
+  return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.q)+'&hl=ko';
 }
 function dirUrl(k){
-  var p=P[k]; if(!p) return '#';
-  return 'https://www.google.com/maps/dir/?api=1&destination='+p.lat+','+p.lng+'&travelmode=transit&hl=ko';
+  var p=P[k]; if(!p || !p.q) return '#';
+  return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.q)+'&travelmode=transit&hl=ko';
 }
 
 /* ══════════════════════════════════════════
@@ -633,7 +841,8 @@ var FOOD = {
     lunch:[
       {em:'🥟',n:'긴자 텐류',jp:'銀座天龍',d:'커다란 교자와 중화 요리. 도착일 점심으로 든든한 선택',m:'긴자 · 점심 후보',pk:'tenryu'},
       {em:'🍜',n:'긴자 오보로즈키',jp:'銀座 朧月',d:'진한 츠케멘·라멘. 한 그릇 빠르게 먹고 다음 동선으로',m:'긴자 · 점심 후보',pk:'oborozuki'},
-      {em:'🍣',n:'쿄스시',jp:'京すし',d:'오마카세 말고 캐주얼하게 먹는 스시 후보',m:'긴자 · 점심 후보',pk:'kyosushi'},
+      {em:'🍣',n:'캐주얼 스시 (지점 선택 전)',jp:'',d:'쿄스시처럼 캐주얼 스시를 원할 때의 후보. 동명 매장이 여러 곳이라 지점 확정 전에는 지도 핀을 만들지 않아.',m:'긴자 · 지점 재확인 필요'},
+      {em:'🥩',n:'이마카츠 긴자점',jp:'今勝 銀座店',d:'긴자 4-13-18의 돈카츠 전문점. Day 1 긴자 동선에 자연스럽게 붙는 점심 후보',m:'긴자 · 돈카츠 후보',pk:'imakatsuGinza'},
       {em:'🏬',n:'긴자 백화점 식당가',jp:'デパート レストラン',d:'도착 시간·줄·컨디션 따라 가장 유연하게 고를 수 있는 안전한 카드',m:'긴자 · 현장 선택',pk:'ginza'}
     ],
     dinner:[
@@ -654,10 +863,14 @@ var FOOD = {
   '2026-09-14':{
     lunch:[
       {em:'🍚',n:'토라후쿠 아오야마 본점',jp:'寅福 青山本店',d:'제철 반찬과 솥밥 중심의 일본 정식. 쇼핑 중 제대로 밥 먹고 싶을 때',m:'아오야마 · 점심 후보',pk:'torafuku'},
-      {em:'🍵',n:'마츠바야 사료',jp:'松葉屋茶寮',d:'일본차·디저트와 가벼운 휴식. 쇼핑 시간이 아까우면 과감히 패스',m:'아오야마 · 카페 후보',pk:'omote'}
+      {em:'🍵',n:'마츠바야 사료',jp:'松葉屋茶寮',d:'일본차·디저트와 가벼운 휴식. 쇼핑 시간이 아까우면 과감히 패스',m:'아오야마 · 카페 후보',pk:'omote'},
+      {em:'🍚',n:'카츠동야 즈이초',jp:'かつ丼屋 瑞兆',d:'시부야 우다가와초 41-26의 카츠동 명소. 시부야 쇼핑 동선에서 점심으로 붙이기 좋음',m:'시부야 · 카츠동 후보',pk:'zuichoShibuya'}
     ],
     dinner:[
       {em:'🍸',n:'타블로스 라운지',jp:'タブローズラウンジ',d:'20시부터 여는 다이칸야마 라운지. 저녁 후 마지막 한 잔',m:'다이칸야마 · 20:00–02:00',pk:'tableauxLounge'}
+    ],
+    bookmark:[
+      {em:'🍣',n:'신주쿠 사카에즈시 서쪽출구점',jp:'栄寿司 西口店',d:'신주쿠 서쪽 출구 도보 약 2분. Day 3에 신주쿠까지 가게 될 때의 캐주얼 스시 후보',m:'신주쿠 · 동선 변경 시 후보',pk:'sakaeZushiNishiguchi'}
     ]
   },
   '2026-09-15':{
@@ -683,11 +896,11 @@ var CAFES = [
   {id:'kobuta', em:'🐷', n:'모리노 코부타', jp:'森のこぶた', area:'신바시(숙소)',
    d:'아침 7시에 열어. 야채 듬뿍 수프랑 키슈. 나가기 전에 든든하게 먹기 딱 좋아', h:'07:00~', c:'¥800~', lat:35.6650, lng:139.7563},
   {id:'fuji', em:'🕰️', n:'킷사 후지', jp:'喫茶フジ', area:'신바시(숙소)',
-   d:'역 앞 빌딩 지하의 쇼와 레트로 킷사텐. 필라프랑 핫샌드. 관광객 거의 없어', h:'평일 위주', c:'¥700~', lat:35.6664, lng:139.7581},
+   d:'역 앞 빌딩 지하의 쇼와 레트로 킷사텐. 필라프랑 핫샌드. 관광객 거의 없어', h:'방문 전 영업 확인', c:'¥700~', lat:35.6664, lng:139.7581},
   {id:'cafedeux', em:'💴', n:'카페 두', jp:'カフェ・ドゥー', area:'신바시(숙소)',
    d:'사쿠라다 공원 옆 숨은 곳. 블렌드 커피가 200엔이야. 신바시역 도보 3분', h:'낮 시간대', c:'¥200~', lat:35.6646, lng:139.7546},
-  {id:'circles', em:'☕', n:'시오도메 커피 스탠드', jp:'CIRCLES汐留 1F', area:'신바시(숙소)',
-   d:'시오도메 CIRCLES 1층. 아침 8시부터. 모던하고 깔끔한 스탠드형', h:'08:00~', c:'¥500~', lat:35.6640, lng:139.7600},
+  {id:'circles', em:'☕', n:'COMFORT Stand 시오도메', jp:'COMFORT Stand', area:'신바시(숙소)',
+   d:'CIRCLES 시오도메 1층의 COMFORT Stand. 기존 이름이 아니라 실제 매장명 기준으로 정정했어', h:'08:00~', c:'¥500~', lat:35.6640, lng:139.7600},
 
   /* ── 긴자 ── */
   {id:'lambre', em:'☕', n:'카페 드 람브르', jp:'カフェ・ド・ランブル', area:'긴자',
@@ -706,8 +919,8 @@ var CAFES = [
    d:'현대적인 화과자 + 일본차 찻집. 조용하고 단정해. 선물 사기도 좋아', h:'11:00~19:00', c:'¥1,500~', lat:35.6720, lng:139.7638},
 
   /* ── 아사쿠사 ── */
-  {id:'dandelion', em:'🍫', n:'댄델리온 초콜릿 아사쿠사', jp:'Dandelion Chocolate', area:'아사쿠사',
-   d:'빈투바 초콜릿 공방 카페. 핫초코가 진짜 진해. 센소지 보고 들르기 좋아', h:'10:00~19:00', c:'¥800~', lat:35.7105, lng:139.7935},
+  {id:'dandelion', em:'🍫', n:'댄델리온 초콜릿 구라마에', jp:'ダンデライオン・チョコレート 蔵前', area:'아사쿠사',
+   d:'구라마에의 빈투바 초콜릿 공방 카페. 아사쿠사와는 걸어서 이동 가능한 인근 동네야', h:'10:00~19:00', c:'¥800~', lat:35.7105, lng:139.7935},
   {id:'fuglena', em:'🇳🇴', n:'후글렌 아사쿠사', jp:'Fuglen Asakusa', area:'아사쿠사',
    d:'노르웨이 로스터리의 아사쿠사 지점. 낡은 동네에 북유럽 감성이 얹혀 있어', h:'아침~밤', c:'¥700~', lat:35.7115, lng:139.7955},
   {id:'pelican', em:'🍞', n:'펠리컨 카페', jp:'PELICAN CAFE', area:'아사쿠사',
@@ -728,11 +941,11 @@ var CAFES = [
    d:'넓고 밝고 앉기 편해. 실패 없는 선택지. 걷다 지쳤을 때의 대피소야', h:'08:00~19:00', c:'¥700~', lat:35.6640, lng:139.7118},
   {id:'panto', em:'🍞', n:'빵토 에스프레소토', jp:'パンとエスプレッソと', area:'하라주쿠·오모테산도',
    d:'프렌치토스트가 시그니처. 브런치로도 카페로도 되는 곳', h:'08:00~19:00', c:'¥1,200~', lat:35.6675, lng:139.7090},
-  {id:'marion', em:'🍓', n:'마리온 크레페', jp:'マリオンクレープ', area:'하라주쿠·오모테산도',
+  {id:'marion', em:'🍓', n:'마리온 크레페 다케시타도리점', jp:'マリオンクレープ 原宿竹下通り店', area:'하라주쿠·오모테산도',
    d:'다케시타 거리 크레페 원조. 앉아서 먹는 게 아니라 들고 걸으면서 먹는 것', h:'10:30~20:00 정도', c:'¥700~', lat:35.6717, lng:139.7052},
 
   /* ── 시부야 ── */
-  {id:'aboutlife', em:'🧋', n:'어바웃 라이프 커피', jp:'About Life Coffee Brewers', area:'시부야',
+  {id:'aboutlife', em:'🧋', n:'어바웃 라이프 커피 도겐자카점', jp:'ABOUT LIFE COFFEE BREWERS 道玄坂店', area:'시부야',
    d:'서서 마시는 작은 스탠드. 시부야에서 커피 퀄리티로 손꼽혀. 테이크아웃 추천', h:'08:00~18:00', c:'¥500~', lat:35.6605, lng:139.6970},
   {id:'streamer', em:'🥛', n:'스트리머 커피 시부야', jp:'Streamer Coffee Company', area:'시부야',
    d:'라떼아트 대회 우승자가 만든 곳. 밀리터리 라떼가 시그니처야', h:'08:00~18:00', c:'¥700~', lat:35.6620, lng:139.6990},
@@ -750,12 +963,12 @@ var CAFES = [
    d:'캘리포니아 산타크루즈 로스터리. 신주쿠역 근처라 접근성이 최고야', h:'07:00~21:00', c:'¥600~', lat:35.6900, lng:139.7005},
   {id:'seibu', em:'🕰️', n:'커피 세이부', jp:'珈琲西武', area:'신주쿠',
    d:'쇼와 시대 그대로인 레트로 킷사텐. 푹신한 소파랑 크림소다. 시간여행 느낌이야', h:'10:00~22:00', c:'¥900~', lat:35.6915, lng:139.7040},
-  {id:'tsubakiya', em:'🌹', n:'츠바키야 커피', jp:'椿屋珈琲', area:'신주쿠',
-   d:'다이쇼 로망 컨셉. 사이폰으로 내린 커피. 인테리어가 압도적이라 앉아만 있어도 좋아', h:'낮~밤', c:'¥1,000~', lat:35.6910, lng:139.7025},
+  {id:'tsubakiya', em:'🌹', n:'츠바키야 커피 신주쿠 차료', jp:'椿屋珈琲 新宿茶寮', area:'신주쿠',
+   d:'다이쇼 로망 컨셉. 사이폰으로 내린 커피. 인테리어가 압도적이라 앉아만 있어도 좋아', h:'매장 선택 확인', c:'¥1,000~', lat:35.6910, lng:139.7025},
   {id:'takano', em:'🍓', n:'신주쿠 다카노 프루츠 파라', jp:'新宿高野 フルーツパーラー', area:'신주쿠',
    d:'신주쿠 명물 고급 과일 전문점의 파라. 파르페 하나가 사치스러워. 마지막 날 사치용', h:'11:00~20:00 정도', c:'¥2,000~', lat:35.6905, lng:139.7020},
   {id:'budou', em:'🍇', n:'킷사 부도노키', jp:'喫茶 ぶどうの木', area:'신주쿠',
-   d:'신주쿠에서 진짜 한산한 숨은 곳. 사람 많은 게 지겨울 때 도망칠 데', h:'낮 시간대', c:'¥700~', lat:35.6925, lng:139.7050},
+   d:'신주쿠에서 진짜 한산한 숨은 곳. 사람 많은 게 지겨울 때 도망칠 데', h:'방문 전 영업 확인', c:'¥700~', lat:35.6925, lng:139.7050},
 
   /* ── 메구로 · Day 1 ── */
   {id:'kanade-lounge', em:'🏛️', n:'카나데 라운지', jp:'KANADE LOUNGE', area:'메구로',
@@ -772,6 +985,206 @@ var CAFES = [
    d:'마츠바야 사료와 같은 공간의 갤러리. 커피·아트 둘 다 필요한 날의 쉼표', h:'10:00~20:00 · 부정기 휴무', c:'¥1,000~', lat:35.6633, lng:139.7110}
 ];
 var CAFE_AREAS = ['전체','신바시(숙소)','메구로','긴자','아사쿠사','하라주쿠·오모테산도','시부야','신주쿠'];
+/* Maps audit 2026-09-06: exact store names and addresses only. */
+var CAFE_LOCATIONS = {
+  "piazza": [
+    "CAFE PIAZZA（カフェ ピアッツァ）",
+    "〒105-0004 東京都港区新橋3-16-17 新橋ぷらっとホーム1F",
+    "CAFE PIAZZA 東京都港区新橋3-16-17 新橋ぷらっとホーム"
+  ],
+  "kobuta": [
+    "森のこぶた",
+    "〒105-0003 東京都港区西新橋2-2-2 澤ビル1F",
+    "森のこぶた 東京都港区西新橋2-2-2 澤ビル1F"
+  ],
+  "fuji": [
+    "喫茶フジ（COFFEE FUJI）",
+    "〒105-0004 東京都港区新橋2-16-1 ニュー新橋ビル地下1階",
+    "喫茶フジ 東京都港区新橋2-16-1 ニュー新橋ビル地下1階"
+  ],
+  "cafedeux": [
+    "Cafe' Deux（カフェ・ドゥー）",
+    "〒105-0004 東京都港区新橋3-16-3 港区立生涯学習センター1階",
+    "Cafe Deux カフェドゥー 東京都港区新橋3-16-3 港区立生涯学習センター"
+  ],
+  "circles": [
+    "COMFORT Stand",
+    "〒105-0021 東京都港区東新橋2-9-1 CIRCLES汐留1F",
+    "COMFORT Stand CIRCLES汐留 東京都港区東新橋2-9-1"
+  ],
+  "lambre": [
+    "カフェ・ド・ランブル（CAFÉ DE L'AMBRE）",
+    "〒104-0061 東京都中央区銀座8-10-15",
+    "カフェ・ド・ランブル 東京都中央区銀座8-10-15"
+  ],
+  "shiseido": [
+    "資生堂パーラー 銀座本店サロン・ド・カフェ",
+    "〒104-0061 東京都中央区銀座8-8-3 東京銀座資生堂ビル3F",
+    "資生堂パーラー 銀座本店サロン・ド・カフェ 東京都中央区銀座8-8-3"
+  ],
+  "american": [
+    "喫茶アメリカン",
+    "〒104-0061 東京都中央区銀座4-11-7",
+    "喫茶アメリカン 東京都中央区銀座4-11-7"
+  ],
+  "gwest": [
+    "銀座ウエスト 銀座本店",
+    "〒104-0061 東京都中央区銀座7-3-6",
+    "銀座ウエスト 銀座本店 東京都中央区銀座7-3-6"
+  ],
+  "bacha": [
+    "Bacha Coffee Ginza／バシャコーヒー 銀座店",
+    "〒104-0061 東京都中央区銀座5-6-6",
+    "Bacha Coffee Ginza 東京都中央区銀座5-6-6"
+  ],
+  "henri": [
+    "アンリ・シャルパンティエ 銀座メゾン",
+    "〒104-0061 東京都中央区銀座2-8-20 ヨネイビル1F",
+    "アンリシャルパンティエ 銀座メゾン 東京都中央区銀座2-8-20"
+  ],
+  "higashiya": [
+    "HIGASHIYA GINZA",
+    "〒104-0061 東京都中央区銀座1-7-7 ポーラ銀座ビル2F",
+    "HIGASHIYA GINZA 東京都中央区銀座1-7-7 ポーラ銀座ビル2F"
+  ],
+  "dandelion": [
+    "ダンデライオン・チョコレート ファクトリー＆カフェ蔵前",
+    "〒111-0051 東京都台東区蔵前4-14-6",
+    "ダンデライオンチョコレート ファクトリー&カフェ蔵前 東京都台東区蔵前4-14-6"
+  ],
+  "fuglena": [
+    "FUGLEN ASAKUSA",
+    "〒111-0032 東京都台東区浅草2-6-15",
+    "FUGLEN ASAKUSA 東京都台東区浅草2-6-15"
+  ],
+  "pelican": [
+    "ペリカンカフェ 浅草店",
+    "〒111-0042 東京都台東区寿3-9-11",
+    "ペリカンカフェ 浅草店 東京都台東区寿3-9-11"
+  ],
+  "suke6": [
+    "SUKE6 DINER（スケロクダイナー）",
+    "〒111-0033 東京都台東区花川戸1-11-1",
+    "SUKE6 DINER 東京都台東区花川戸1-11-1"
+  ],
+  "kamiya": [
+    "神谷バー",
+    "〒111-0032 東京都台東区浅草1-1-1",
+    "神谷バー 東京都台東区浅草1-1-1"
+  ],
+  "fuglen": [
+    "FUGLEN TOKYO",
+    "〒151-0063 東京都渋谷区富ヶ谷1-16-11",
+    "FUGLEN TOKYO 東京都渋谷区富ヶ谷1-16-11"
+  ],
+  "mameya": [
+    "KOFFEE MAMEYA",
+    "〒150-0001 東京都渋谷区神宮前4-15-3",
+    "KOFFEE MAMEYA 東京都渋谷区神宮前4-15-3"
+  ],
+  "kitsune": [
+    "カフェ キツネ青山・表参道店",
+    "〒107-0062 東京都港区南青山3-15-9",
+    "Café Kitsuné Aoyama 東京都港区南青山3-15-9"
+  ],
+  "bluebottle": [
+    "ブルーボトルコーヒー 青山カフェ",
+    "〒107-0062 東京都港区南青山3-13-14",
+    "Blue Bottle Coffee Aoyama Cafe 東京都港区南青山3-13-14"
+  ],
+  "panto": [
+    "パンとエスプレッソと",
+    "〒150-0001 東京都渋谷区神宮前3-4-9",
+    "パンとエスプレッソと 東京都渋谷区神宮前3-4-9"
+  ],
+  "marion": [
+    "マリオンクレープ 原宿竹下通り店",
+    "〒150-0001 東京都渋谷区神宮前1-6-15 ジュネスビル1F",
+    "Marion Crepes Harajuku Takeshita Street 東京都渋谷区神宮前1-6-15"
+  ],
+  "aboutlife": [
+    "ABOUT LIFE COFFEE BREWERS 道玄坂店",
+    "〒150-0043 東京都渋谷区道玄坂1-19-8",
+    "ABOUT LIFE COFFEE BREWERS 道玄坂店 東京都渋谷区道玄坂1-19-8"
+  ],
+  "streamer": [
+    "STREAMER COFFEE COMPANY",
+    "〒150-0002 東京都渋谷区渋谷1-20-28",
+    "STREAMER COFFEE COMPANY SHIBUYA 東京都渋谷区渋谷1-20-28"
+  ],
+  "camelback": [
+    "CAMELBACK sandwich&espresso",
+    "〒150-0047 東京都渋谷区神山町42-2",
+    "CAMELBACK sandwich&espresso 東京都渋谷区神山町42-2"
+  ],
+  "lion": [
+    "名曲喫茶ライオン",
+    "〒150-0043 東京都渋谷区道玄坂2-19-13",
+    "名曲喫茶ライオン 東京都渋谷区道玄坂2-19-13"
+  ],
+  "nishimura": [
+    "渋谷西村フルーツパーラー道玄坂店",
+    "〒150-0042 東京都渋谷区宇田川町22-2 西村ビル2F",
+    "渋谷西村フルーツパーラー道玄坂店 東京都渋谷区宇田川町22-2"
+  ],
+  "paulbassett": [
+    "ポール・バセット 新宿店",
+    "〒163-0590 東京都新宿区西新宿1-26-2 新宿野村ビルB1F",
+    "PAUL BASSETT 新宿店 東京都新宿区西新宿1-26-2"
+  ],
+  "verve": [
+    "VERVE COFFEE ROASTERS NEWoMan SHINJUKU",
+    "〒151-0051 東京都渋谷区千駄ヶ谷5-24-55 NEWoMan新宿2F",
+    "VERVE COFFEE ROASTERS NEWoMan SHINJUKU 東京都渋谷区千駄ヶ谷5-24-55"
+  ],
+  "seibu": [
+    "珈琲西武 本店",
+    "〒160-0021 東京都新宿区歌舞伎町1-6-12 ハナミチ東京 歌舞伎町2階",
+    "珈琲西武 本店 東京都新宿区歌舞伎町1-6-12"
+  ],
+  "tsubakiya": [
+    "椿屋珈琲 新宿茶寮",
+    "〒160-0022 東京都新宿区新宿3-36-12 杉忠ビル2階・3階",
+    "椿屋珈琲 新宿茶寮 東京都新宿区新宿3-36-12"
+  ],
+  "takano": [
+    "タカノフルーツパーラー＆フルーツバー",
+    "〒160-0022 東京都新宿区新宿3-26-11 新宿高野本店5F",
+    "タカノフルーツパーラー 新宿高野本店 東京都新宿区新宿3-26-11"
+  ],
+  "budou": [
+    "喫茶 ぶどうの木",
+    "〒160-0022 東京都新宿区新宿6-26-6 新宿ハーブビル1F",
+    "喫茶 ぶどうの木 東京都新宿区新宿6-26-6"
+  ],
+  "kanade-lounge": [
+    "KANADE LOUNGE",
+    "〒153-0064 東京都目黒区下目黒1-8-1 Gajoen Tokyo内",
+    "KANADE LOUNGE Gajoen Tokyo 東京都目黒区下目黒1-8-1"
+  ],
+  "ginza-west-main": [
+    "銀座ウエスト 銀座本店",
+    "〒104-0061 東京都中央区銀座7-3-6",
+    "銀座ウエスト 銀座本店 東京都中央区銀座7-3-6"
+  ],
+  "matsubaya-saryo": [
+    "松葉屋茶寮",
+    "〒107-0062 東京都港区南青山5-4-27 Barbizon104 1F",
+    "松葉屋茶寮 東京都港区南青山5-4-27 Barbizon104 1F"
+  ],
+  "hakobune-gallery": [
+    "hakobune GALLERY／方舟GALLERY",
+    "〒107-0062 東京都港区南青山5-4-27 Barbizon104 1F",
+    "hakobune GALLERY 東京都港区南青山5-4-27 Barbizon104 1F"
+  ]
+};
+CAFES.forEach(function(c){
+  var v=CAFE_LOCATIONS[c.id];
+  if(!v) return;
+  c.jp=v[0]; c.a=v[1]; c.q=v[2];
+  delete c.lat; delete c.lng; // Never retain an unverified pin just to calculate a distance.
+});
+
 
 /* ══════════════════════════════════════════
    6. 쇼핑
@@ -1237,7 +1650,7 @@ function renderFood(){
         + '<div class="fo-info"><div class="fo-name">'+o.n+'<span class="fo-jp">'+(o.jp||'')+'</span></div>'
         + '<div class="fo-desc">'+o.d+'</div><div class="fo-meta">'+chips+'</div></div>'
         + '<div class="fo-right"><div class="fo-check">✓</div>'
-        + '<a class="fo-map" href="'+dirUrl(o.pk)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍</a>'
+        + (o.pk?'<a class="fo-map" href="'+dirUrl(o.pk)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍</a>':'<span class="fo-map">확인</span>')
         + '</div></div>';
     });
     h += '</div>';
@@ -1258,8 +1671,8 @@ function askGeo(){
   navigator.geolocation.getCurrentPosition(function(pos){
     myPos={lat:pos.coords.latitude, lng:pos.coords.longitude};
     document.getElementById('geoIc').textContent='🎯';
-    document.getElementById('geoTxt').innerHTML='<b style="color:var(--green)">위치 켜짐</b> · 가까운 순으로 정렬했어';
-    document.getElementById('geoBtn').textContent='새로고침';
+    document.getElementById('geoTxt').innerHTML='<b style="color:var(--green)">위치 확인됨</b> · 각 카드의 📍을 누르면 정식 주소로 길안내가 열려';
+    document.getElementById('geoBtn').textContent='위치 갱신';
     renderCafes();
   }, function(){
     document.getElementById('geoTxt').textContent='위치를 못 가져왔어. 동네별로 보여줄게';
@@ -1279,8 +1692,8 @@ function renderCafes(){
 
   var list = CAFES.filter(function(c){ return cafeArea==='전체' || c.area===cafeArea; });
   if(myPos){
-    list = list.map(function(c){ return Object.assign({}, c, {_d:distKm(myPos,c)}); })
-               .sort(function(a,b){ return a._d-b._d; });
+    list = list.map(function(c){ return Object.assign({}, c, {_d:(Number.isFinite(c.lat)&&Number.isFinite(c.lng))?distKm(myPos,c):null}); })
+               .sort(function(a,b){ return (a._d===null?Infinity:a._d)-(b._d===null?Infinity:b._d); });
   }
   document.getElementById('cafeList').innerHTML = list.map(function(c){
     var k='cafe:'+c.id;
@@ -1289,12 +1702,12 @@ function renderCafes(){
       + '<div class="cafe-info"><div class="cafe-name">'+c.n+'<span class="cafe-jp">'+c.jp+'</span></div>'
       + '<div class="cafe-desc">'+c.d+'</div>'
       + '<div class="cafe-meta">'
-      +   (c._d!==undefined?'<span class="cafe-dist">'+fmtDist(c._d)+'</span>':'')
+      +   (c._d!==undefined&&c._d!==null?'<span class="cafe-dist">'+fmtDist(c._d)+'</span>':'')
       +   '<span class="chip">'+c.area+'</span><span class="chip">'+c.h+'</span><span class="chip">'+c.c+'</span>'
       + '</div></div>'
       + '<div class="cafe-acts">'
       +   '<button class="been-btn" onclick="toggleCheck(\''+k+'\');renderCafes()">✓</button>'
-      +   '<a class="fo-map" href="https://www.google.com/maps/dir/?api=1&destination='+c.lat+','+c.lng+'&travelmode=walking&hl=ko" target="_blank" rel="noopener">📍</a>'
+      +   '<a class="fo-map" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(c.q)+'&travelmode=walking&hl=ko" target="_blank" rel="noopener">📍</a>'
       + '</div></div>';
   }).join('');
 }
@@ -1369,7 +1782,7 @@ function renderPrep(){
     +'<div class="prep-msg-lbl">'+(dd>0?'출발까지 D-'+dd:'여행 중')+'</div>'
     +'<div class="prep-msg-txt">'+done+' / '+all+' 챙겼어'+(done===all?' — 완벽해! 🎉':'')+'</div></div></div>';
   h+='<div class="info-card"><div class="info-card-title">✈️ 출발 당일 (9/12 토)</div>'
-    +'<div class="info-row"><span class="info-dot"></span><span><b>04:50</b> 종로구 출발 · 공항버스 6011번대 또는 택시(45~60분, 6~7만원대)</span></div>'
+    +'<div class="info-row"><span class="info-dot"></span><span><b>04:50</b> 서대문역사거리(신라스테이) · <b>6002번</b> 공항리무진 탑승</span></div>'
     +'<div class="info-row"><span class="info-dot"></span><span><b>06:00</b> 인천 <b>제1터미널(T1)</b> 도착 — 티웨이는 T1이야</span></div>'
     +'<div class="info-row"><span class="info-dot"></span><span><b>08:55</b> 이륙 · 토요일 아침이라 2시간 반은 잡는 게 안전해</span></div>'
     +'<div class="info-row"><span class="info-dot"></span><span>공항철도 직통 첫차가 05:20대라 빠듯해. <b>택시나 공항버스를 추천</b></span></div></div>';
@@ -1448,15 +1861,15 @@ function loadMap(){
   if(!map) return;
   layers.forEach(function(l){ map.removeLayer(l); });
   layers=[];
-  var pins=DAYS[curDay].pins.map(function(k){ return P[k]; }).filter(Boolean);
+  var pins=DAYS[curDay].pins.map(function(k){ return P[k]; }).filter(function(p){ return p && Number.isFinite(p.lat) && Number.isFinite(p.lng); });
   if(!pins.length) return;
   var pts=[];
   pins.forEach(function(p,i){
     var m=L.marker([p.lat,p.lng],{icon:mkIcon(i)}).addTo(map).bindPopup('<b>'+(i+1)+'. '+p.n+'</b>');
     layers.push(m); pts.push([p.lat,p.lng]);
   });
-  var line=L.polyline(pts,{color:'#ff3b5c',weight:2.5,opacity:.45,dashArray:'6,6'}).addTo(map);
-  layers.push(line);
+  /* 일정 중 검증 좌표가 없는 장소는 핀에서 제외한다. 점선으로 연결하면
+     실제 동선처럼 오해될 수 있어, 지도는 검증된 개별 장소만 보여준다. */
   map.fitBounds(L.latLngBounds(pts).pad(0.25));
 }
 function initMap(){
