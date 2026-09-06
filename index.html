@@ -1408,7 +1408,6 @@ function toggleCheck(k){ if(state.checks[k]) delete state.checks[k]; else state.
 function tryGate(){
   var v=document.getElementById('gateIn').value.trim();
   if(v===GATE_CODE){
-    try{ localStorage.setItem(LS_KEY+':ok','1'); }catch(e){}
     document.getElementById('gate').classList.add('hide');
     boot();
   } else {
@@ -1905,12 +1904,6 @@ function boot(){
     else { closeModal(); closePhraseModal(); }
   });
 }
-try{
-  if(localStorage.getItem(LS_KEY+':ok')==='1'){
-    document.getElementById('gate').classList.add('hide');
-    boot();
-  }
-}catch(e){}
 </script>
 </body>
 </html>
