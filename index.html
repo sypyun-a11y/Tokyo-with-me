@@ -6,9 +6,16 @@
 <title>밍갱 푸호 도쿄 여행 ✈️</title>
 <meta property="og:title" content="밍갱 푸호 도쿄 여행 ✈️"/>
 <meta property="og:description" content="2026.09.12 ~ 09.15 · 3박 4일 도쿄"/>
-<meta property="og:image" content="og-image.png"/>
+<meta property="og:url" content="https://tokyo-with-me.vercel.app/"/>
+<meta property="og:image" content="https://tokyo-with-me.vercel.app/og-image.png"/>
+<meta property="og:image:type" content="image/png"/>
+<meta property="og:image:width" content="512"/>
+<meta property="og:image:height" content="512"/>
 <meta property="og:type" content="website"/>
 <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="밍갱 푸호 도쿄 여행 ✈️"/>
+<meta name="twitter:description" content="2026.09.12 ~ 09.15 · 3박 4일 도쿄"/>
+<meta name="twitter:image" content="https://tokyo-with-me.vercel.app/og-image.png"/>
 <meta name="theme-color" content="#ff3b5c">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
@@ -457,6 +464,7 @@ var TRIP_DATES = ['2026-09-12','2026-09-13','2026-09-14','2026-09-15'];
    ══════════════════════════════════════════ */
 var P = {
   home:      {n:'서울 종로구', jp:'', lat:37.5729, lng:126.9794},
+  seodaemunBus:{n:'서대문역사거리 (신라스테이)', jp:'西大門駅交差点', lat:37.5657, lng:126.9668},
   icn:       {n:'인천공항 제1터미널', jp:'ICN T1', lat:37.4491, lng:126.4506},
   nrt:       {n:'나리타공항', jp:'成田空港', lat:35.7647, lng:140.3864},
   hotel:     {n:'칸데오 호텔즈 도쿄 신바시', jp:'カンデオホテルズ東京新橋', lat:35.6656, lng:139.7570},
@@ -511,8 +519,8 @@ var DAYS = [
     msg:{av:'🖼️', txt:'첫날은 예술·카페·긴자. 천천히 시작하자 ☕', bg:'linear-gradient(135deg,#5c3b8c,#9b73cf)'},
     pins:['hotel','kanadeLounge','moriMuseum','ginzaWest','gonpachiNishiazabu'],
     slots:[
-      {t:'04:50', p:'home', k:'move', name:'종로구 출발', desc:'공항버스 또는 새벽 택시. 토요일 아침이니 05시 전 출발이 마음 편해.', warn:'<strong>06:00까지 인천 T1 도착.</strong> 티웨이는 제1터미널이야.'},
-      {t:'06:00', p:'icn', k:'move', name:'인천공항 제1터미널 도착', desc:'체크인 → 수하물 → 출국심사. Visit Japan Web QR을 마지막으로 확인.', tip:'<strong>Visit Japan Web</strong> 등록해두면 나리타 입국 줄이 줄어.'},
+      {t:'04:50', p:'seodaemunBus', k:'move', name:'6002번 · 서대문역사거리(신라스테이) 탑승', desc:'서대문역이 아니라 <strong>서대문역사거리(신라스테이)</strong> 정류장에서 6002번 공항리무진을 타. 목적지는 인천공항 제1터미널(T1).', warn:'<strong>지도 버튼은 서대문역사거리 정류장으로 안내해.</strong> 당일 첫차 시각은 출발 전 공항리무진 시간표에서 마지막 확인.', chips:['6002번','서대문역사거리','인천 T1']},
+      {t:'06:00', p:'icn', k:'move', name:'인천공항 제1터미널 도착', desc:'6002번 공항리무진에서 내린 뒤 티웨이 체크인 → 수하물 → 출국심사.', tip:'<strong>Visit Japan Web</strong> QR과 여권을 마지막으로 확인.', tr:{ic:'🚌',mode:'6002번 공항리무진 · 서대문 → 인천 T1',time:'교통 상황 기준 약 70~90분'}},
       {t:'08:55', p:'icn', k:'move', name:'이륙 ✈️', desc:'ICN → NRT. 시차는 없어.', tr:{ic:'✈️',mode:'ICN → NRT',time:'2시간 25분'}},
       {t:'11:00', p:'nrt', k:'move', name:'나리타공항 도착', desc:'입국심사 → 수하물 수령 → 세관. Visit Japan Web QR을 준비해두면 흐름이 빠르다.'},
       {t:'12:10', p:'nrt', k:'move', name:'B1F 철도역으로 이동', desc:'도착층에서 철도 표지판을 따라 지하 1층(B1F)으로 내려가. 캐리어 끌고 가도 동선이 명확해.'},

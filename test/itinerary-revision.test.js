@@ -42,6 +42,18 @@ function dayPlaces(day) {
   return day.slots.map((slot) => slot.p);
 }
 
+test('Day 1 starts at Seodaemun Intersection on Airport Limousine 6002, not a generic Gwanghwamun coordinate', () => {
+  const { DAYS, P } = loadTripData();
+  const slots = DAYS[0].slots;
+  const stop = P.seodaemunBus;
+
+  assert.ok(stop, 'Seodaemun bus stop must be a defined place');
+  assert.equal(stop.n, '서대문역사거리 (신라스테이)');
+  assert.ok(Math.abs(stop.lat - 37.5657) < 0.002, 'stop must be at Seodaemun, not Gwanghwamun');
+  assert.ok(slots.some((slot) => slot.p === 'seodaemunBus' && /6002/.test(slot.name)));
+  assert.ok(!slots.some((slot) => slot.p === 'home'));
+});
+
 test('Day 1 explains the Narita B1F → Keisei/Sky Access → Shimbashi path before the city itinerary', () => {
   const { DAYS } = loadTripData();
   const slots = DAYS[0].slots;
