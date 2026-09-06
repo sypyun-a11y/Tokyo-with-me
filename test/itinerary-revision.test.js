@@ -42,6 +42,20 @@ function dayPlaces(day) {
   return day.slots.map((slot) => slot.p);
 }
 
+test('Day 1 explains the Narita B1F → Keisei/Sky Access → Shimbashi path before the city itinerary', () => {
+  const { DAYS } = loadTripData();
+  const slots = DAYS[0].slots;
+  const stationIndex = slots.findIndex((slot) => /B1F.*철도역/.test(slot.name));
+  const gateIndex = slots.findIndex((slot) => /Keisei.*Sky Access.*개찰구/.test(slot.name));
+  const trainIndex = slots.findIndex((slot) => /Access Express/.test(slot.name));
+
+  assert.ok(stationIndex >= 0, 'B1F railway-station route must be visible');
+  assert.ok(gateIndex > stationIndex, 'gate guidance must follow B1F guidance');
+  assert.ok(trainIndex > gateIndex, 'train boarding must follow gate guidance');
+  assert.match(slots[gateIndex].tip, /Suica/);
+  assert.match(slots[trainIndex].warn, /都営浅草線|신바시/);
+});
+
 test('Day 1 follows Kanade Lounge → Mori Art Museum → Ginza → Gonpachi and excludes Happo/Asakusa', () => {
   const { DAYS } = loadTripData();
   const places = dayPlaces(DAYS[0]);
